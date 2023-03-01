@@ -10,6 +10,3 @@ dependencies:
 
     # Testing
   - pytest
-
-    # Standard dependencies
-  - openff-nagl
