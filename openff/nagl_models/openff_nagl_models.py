@@ -103,13 +103,13 @@ def validate_nagl_model_path(model: str) -> str:
 
     Loading a file from the installed openff_nagl_models package::
 
-        >>> from openff_nagl_models import validate_nagl_model_path
+        >>> from openff.nagl_models import validate_nagl_model_path
         >>> validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
         '/home/.../openff-nagl-models/openff_nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt'
 
     Loading a file from the current working directory::
 
-        >>> from openff_nagl_models import validate_nagl_model_path
+        >>> from openff.nagl_models import validate_nagl_model_path
         >>> validate_nagl_model_path("my-local-gnn.pt")
         '/home/.../my-local-gnn.pt'
 
@@ -134,7 +134,7 @@ def list_available_nagl_models() -> List[str]:
     --------
     ::
 
-        >>> from openff_nagl_models import list_available_nagl_models
+        >>> from openff.nagl_models import list_available_nagl_models
         >>> list_available_nagl_models()
         ['openff-gnn-am1bcc-0.0.1-alpha.1.pt']
 
