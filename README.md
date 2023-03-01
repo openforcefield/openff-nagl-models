@@ -38,7 +38,7 @@ Or validate if a model name is found in the local directory, or an entry point d
 ```python
 >>> from openff.nagl_models import validate_nagl_model_path
 >>> validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
-'/home/.../openff-nagl-models/openff_nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt'
+'/home/.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt'
 ```
 
 ## Versions
