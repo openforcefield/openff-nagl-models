@@ -20,7 +20,7 @@ defaults:
 jobs:
   test:
     name: Test on ${{ matrix.os }}, Python ${{ matrix.python-version }}
-    runs-on: ${{ matrix.cfg.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
