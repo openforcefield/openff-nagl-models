@@ -136,7 +136,7 @@ def list_available_nagl_models() -> List[str]:
 
         >>> from openff.nagl_models import list_available_nagl_models
         >>> list_available_nagl_models()
-        ['openff-gnn-am1bcc-0.0.1-alpha.1.pt']
+        ['/Users/lily/pydev/openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt']
 
     """
     import glob
@@ -144,4 +144,4 @@ def list_available_nagl_models() -> List[str]:
     model_files = []
     for path in model_paths:
         model_files.extend(glob.glob(os.path.join(path, "*.pt")))
-    return sorted([os.path.basename(f) for f in model_files])
+    return sorted([os.path.abspath(f) for f in model_files])

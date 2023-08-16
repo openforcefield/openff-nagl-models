@@ -13,7 +13,7 @@ from openff.nagl_models import validate_nagl_model_path, list_available_nagl_mod
 
 def find_model_files():
     pattern = resource_filename('openff.nagl_models', 'models/*.pt')
-    filenames = sorted([os.path.basename(path) for path in glob.glob(pattern)])
+    filenames = sorted([os.path.abspath(path) for path in glob.glob(pattern)])
     assert len(filenames) > 0
     return filenames
 
