@@ -7,6 +7,6 @@ hidden: true
 ---
 
 Overview <self>
-openff-gnn-am1bcc-0.1.0-rc1
+openff-gnn-am1bcc-0.1.0-rc1/index.md
 
 :::

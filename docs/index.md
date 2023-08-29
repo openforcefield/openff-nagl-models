@@ -6,7 +6,7 @@ hidden: true
 ---
 
 Overview <self>
-models
+models/index.md
 
 :::
 
