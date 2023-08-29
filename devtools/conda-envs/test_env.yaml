@@ -10,4 +10,4 @@ dependencies:
 
     # Testing
   - pytest
-  - openff-nagl>=0.3.0rc1
+  - openff-nagl >=0.3.0
