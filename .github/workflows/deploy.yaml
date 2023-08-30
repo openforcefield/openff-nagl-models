@@ -25,6 +25,7 @@ jobs:
           token: ${{ secrets.TESTPYPI_UPLOAD_TOKEN }}
           test_submission: true
           package_name: 'openff-nagl-models'
+          wheels: false
 
       - name: pypi_deploy
         uses: MDAnalysis/pypi-deployment@main
@@ -32,3 +33,4 @@ jobs:
         with:
           token: ${{ secrets.PYPI_UPLOAD_TOKEN }}
           package_name: 'openff-nagl-models'
+          wheels: false
