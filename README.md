@@ -33,7 +33,7 @@ You can also list all available models **from all entry points**:
 ```python
 >>> from openff.nagl_models import list_available_nagl_models
 >>> list_available_nagl_models()
-['openff-gnn-am1bcc-0.0.1-alpha.1.pt']
+['.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt', '.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.1.0-rc.1.pt']
 ```
 
 Or validate if a model name is found in the local directory, or an entry point directory:
@@ -46,6 +46,7 @@ Or validate if a model name is found in the local directory, or an entry point d
 
 ## Versions
 - `v0.0.1-alpha.1`: a pre-production model to use for experimentation. We do *not* recommend using this model to assign charges in scientific work.
+- `v0.1.0-rc1`: a pre-production model to use to assign AM1-BCC partial charges.
 
 
 #### Acknowledgements
