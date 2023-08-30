@@ -1,6 +1,7 @@
 # AM1-BCC GNN v0.0.1-alpha
 
 This model is trained to produce AM1-BCC charges similar to OpenEye's implementation.
+It was trained to only to charge RMSE.
 
 ## Domain
 
