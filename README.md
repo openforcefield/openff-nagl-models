@@ -1,7 +1,10 @@
 # Open NAGL Models
 
-[![Build Status](https://github.com/openforcefield/openff-nagl-models/workflows/CI/badge.svg)](https://github.com/openforcefield/openff-nagl-models/actions?query=branch%main+workflow%3ACI)
+| **Latest release** | [![Last release tag](https://img.shields.io/github/release-pre/openforcefield/openff-nagl-models.svg)](https://github.com/openforcefield/openff-nagl-models/releases) ![GitHub commits since latest release (by date) for a branch](https://img.shields.io/github/commits-since/openforcefield/openff-nagl-models/latest)  [![Documentation Status](https://readthedocs.org/projects/openff-nagl-models/badge/?version=latest)](https://openff-nagl-models.readthedocs.io/en/latest/)                                                                                                        |
+| :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**         | [![GH Actions Status](https://github.com/openforcefield/openff-nagl-models/actions/workflows/CI.yml/badge.svg)](https://github.com/openforcefield/openff-nagl-models/actions?query=branch%3Amain+workflow%3ACI) |
 
+                                                                          
 
 This repository contains NAGL models released by the [Open Force Field Initiative](https://openforcefield.org). They are intended to be used by [OpenFF NAGL](https://github.com/openforcefield/openff-nagl).
 
