@@ -2,6 +2,17 @@
 
 This model is trained to produce AM1-BCC charges similar to OpenEye's implementation.
 
+## Training
+
+The model was trained to three targets:
+
+| Target      | Weight | Denominator |
+|-------------|--------|-------------|
+| Charge RMSE | 1      | 0.02        |
+| Dipole RMSE | 1      | 0.1         |
+| ESP RMSE    | 1      | 0.001       |
+
+
 ## Domain
 
 The model is applicable to molecules with:
@@ -77,7 +88,7 @@ This model was trained, validated, and tested on the following datasets:
 | Br      | 15581    | 2486       | 1462  |
 | I       | 2978     | 412        | 239   |
 
-### Total charges
+#### Total charges
 
 | Charge | Training | Validation | Test  |
 |--------|----------|------------|-------|

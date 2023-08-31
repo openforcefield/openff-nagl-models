@@ -1,5 +1,8 @@
 # OpenFF NAGL Models
 
+This repository contains models trained and applied with
+[OpenFF NAGL](https://docs.openforcefield.org/projects/nagl/en/latest/).
+
 :::{toctree}
 ---
 hidden: true
