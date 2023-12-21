@@ -4,15 +4,17 @@ Unit and regression test for the openff_nagl_models package.
 
 import glob
 import os
+import pathlib
 from pkg_resources import resource_filename
 
 
 import pytest
 from openff.nagl_models import validate_nagl_model_path, list_available_nagl_models
+from openff.nagl_models.openff_nagl_models import _get_latest_model
 
 
 def find_model_files():
-    pattern = resource_filename('openff.nagl_models', 'models/*.pt')
+    pattern = resource_filename('openff.nagl_models', 'models/*/*.pt')
     filenames = sorted([os.path.abspath(path) for path in glob.glob(pattern)])
     assert len(filenames) > 0
     return filenames
@@ -56,3 +58,16 @@ def test_entry_points():
         paths = entry_point.load()()
         for path in paths:
             assert os.path.exists(path)
+
+def test_get_latest_model_all():
+    latest_model = _get_latest_model(model_type="am1bcc")
+    assert pathlib.Path(latest_model).stem == "openff-gnn-am1bcc-0.1.0-rc.1"
+
+def test_get_latest_model_error():
+    err = "Model type does-not-exist not found in openff-nagl-models."
+    with pytest.raises(ValueError, match=err):
+        _get_latest_model(model_type="does-not-exist")
+
+def test_get_latest_model_none():
+    latest_model = _get_latest_model(model_type="am1bcc", production_only=True)
+    assert latest_model is None
