@@ -154,7 +154,9 @@ def list_available_nagl_models() -> List[str]:
 
 def _get_latest_model(model_type: str, production_only: bool = False) -> str:
     """
-    Get the latest model of a given type.
+    Get the latest model of a given type released by OpenFF. This will not
+    search for custom models that are not included in the openff-nagl-models
+    package.
 
     Note: this method is provided for convenience for downstream package
     development. It is **not recommended to use this method** in scientific
