@@ -174,7 +174,7 @@ def _get_latest_model(model_type: str, production_only: bool = False) -> str:
     Returns
     -------
     str or None
-        The path to the latest model if it exists, or None if not.
+        The path to the latest model if one exists, or None if not.
 
     Raises
     ------
