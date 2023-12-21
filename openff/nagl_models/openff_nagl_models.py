@@ -219,4 +219,3 @@ def _get_latest_model(model_type: str, production_only: bool = False) -> str:
         versions = [v for v in versions if not v.is_prerelease]
     if versions:
         return os.path.abspath(versions_to_paths[versions[-1]])
-    
