@@ -7,6 +7,7 @@ import os
 import pathlib
 from pkg_resources import resource_filename
 from typing import Optional, Union, List
+import warnings
 
 
 def get_nagl_model_dirs_paths() -> List[str]:
@@ -191,6 +192,13 @@ def _get_latest_model(model_type: str, production_only: bool = False) -> str:
     
     """
     from packaging.version import Version
+
+    warnings.warn(
+        "This method is provided for convenience for downstream package "
+        "development. It is not recommended to use this method in scientific "
+        "scripts or workflows, as it may lead to unexpected or different "
+        "behavior when new models are released."
+    )
     
     base_dir = resource_filename("openff.nagl_models", f"models/{model_type}")
     if not os.path.isdir(base_dir):
