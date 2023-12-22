@@ -153,16 +153,15 @@ def list_available_nagl_models() -> List[str]:
     return sorted([os.path.abspath(f) for f in model_files])
 
 
-def _get_latest_model(model_type: str, production_only: bool = False) -> str:
+def get_models_by_type(
+    model_type: str,
+    production_only: bool = False,
+) -> list[pathlib.Path]:
     """
-    Get the latest model of a given type released by OpenFF. This will not
+    Get all models of a given type released by OpenFF. This will not
     search for custom models that are not included in the openff-nagl-models
-    package.
-
-    Note: this method is provided for convenience for downstream package
-    development. It is **not recommended to use this method** in scientific
-    scripts or workflows, as it may lead to unexpected or different behavior
-    when new models are released.
+    package. Results will be sorted by version number, with the latest
+    version last.
 
     Parameters
     ----------
@@ -173,8 +172,9 @@ def _get_latest_model(model_type: str, production_only: bool = False) -> str:
 
     Returns
     -------
-    str or None
-        The path to the latest model if one exists, or None if not.
+    list[pathlib.Path]
+        The paths to the model files. Results are sorted from earliest
+        to latest version.
 
     Raises
     ------
@@ -186,20 +186,14 @@ def _get_latest_model(model_type: str, production_only: bool = False) -> str:
 
     Getting the latest pre-release model for am1bcc::
     
-        >>> from openff.nagl_models.openff_nagl_models import _get_latest_model
-        >>> _get_latest_model(model_type="am1bcc")
-        '/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt'
+        >>> from openff.nagl_models.openff_nagl_models import get_models_by_type
+        >>> get_models_by_type(model_type="am1bcc")
+        [PosixPath('/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'),
+        PosixPath('/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
     
     """
     from packaging.version import Version
 
-    warnings.warn(
-        "This method is provided for convenience for downstream package "
-        "development. It is not recommended to use this method in scientific "
-        "scripts or workflows, as it may lead to unexpected or different "
-        "behavior when new models are released."
-    )
-    
     base_dir = resource_filename("openff.nagl_models", f"models/{model_type}")
     if not os.path.isdir(base_dir):
         raise ValueError(
@@ -208,14 +202,14 @@ def _get_latest_model(model_type: str, production_only: bool = False) -> str:
             "please manually specify the path to the model file."
         )
     
-    model_files = glob.glob(os.path.join(base_dir, "*.pt"))
+    model_files = pathlib.Path(base_dir).glob("*.pt")
+    
     # assume everything follows the openff-gnn-<model_type>-<version>.pt format
     n_name = len(f"openff-gnn-{model_type}-")
     versions_to_paths = {
-        Version(pathlib.Path(f).stem[n_name:]): f for f in model_files
+        Version(f.stem[n_name:]): f for f in model_files
     }
     versions = sorted(versions_to_paths.keys())
     if production_only:
         versions = [v for v in versions if not v.is_prerelease]
-    if versions:
-        return os.path.abspath(versions_to_paths[versions[-1]])
+    return [versions_to_paths[v] for v in versions]
