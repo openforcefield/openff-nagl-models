@@ -9,28 +9,45 @@ on:
       - published
 
 jobs:
-  pypi_push:
-    environment: deploy
+  testpypi_push:
+    environment:
+      name: deploy
+      url: https://test.pypi.org/p/openff-nagl-models/
+    permissions:
+      id-token: write
     if: "github.repository == 'openforcefield/openff-nagl-models'"
-    name: Build, upload and test pure Python wheels
+    name: Build, upload and test pure Python wheels to TestPyPI
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: testpypi_deploy
         uses: MDAnalysis/pypi-deployment@main
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         with:
-          token: ${{ secrets.TESTPYPI_UPLOAD_TOKEN }}
           test_submission: true
           package_name: 'openff-nagl-models'
+          module_name: 'openff.nagl_models'
           wheels: false
+
+  pypi_push:
+    environment:
+      name: deploy
+      url: https://pypi.org/p/openff-nagl-models/
+    permissions:
+      id-token: write
+    if: "github.repository == 'openforcefield/openff-nagl-models'"
+    name: Build, upload and test pure Python wheels to PyPI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: pypi_deploy
         uses: MDAnalysis/pypi-deployment@main
         if: github.event_name == 'release' && github.event.action == 'published'
         with:
-          token: ${{ secrets.PYPI_UPLOAD_TOKEN }}
           package_name: 'openff-nagl-models'
+          module_name: 'openff.nagl_models'
           wheels: false
