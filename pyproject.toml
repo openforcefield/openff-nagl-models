@@ -17,7 +17,7 @@ maintainers = [
     {name = "Lily Wang", email = "lily.wang@openforcefield.org"},
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dynamic = ["version"]
 
 [project.optional-dependencies]
@@ -32,8 +32,8 @@ doc = [
 [project.entry-points."openforcefield.nagl_model_directory"]
 get_nagl_model_dirs_paths = "openff.nagl_models:get_nagl_model_dirs_paths"
 
-# [project.urls]
-# source = "https://github.com/openforcefield/openff-nagl-models"
+[project.urls]
+source = "https://github.com/openforcefield/openff-nagl-models"
 # documentation = "https://openff-nagl-models.readthedocs.io"
 
 [tool.pytest.ini_options]
