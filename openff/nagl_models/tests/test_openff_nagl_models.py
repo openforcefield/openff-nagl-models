@@ -4,8 +4,7 @@ Unit and regression test for the openff_nagl_models package.
 
 import glob
 import os
-import pathlib
-from pkg_resources import resource_filename
+import importlib.resources
 
 
 import pytest
@@ -14,8 +13,8 @@ from openff.nagl_models.openff_nagl_models import get_models_by_type
 
 
 def find_model_files():
-    pattern = resource_filename('openff.nagl_models', 'models/*/*.pt')
-    filenames = sorted([os.path.abspath(path) for path in glob.glob(pattern)])
+    base = importlib.resources.files('openff.nagl_models')
+    filenames = sorted(base.glob("models/*/*.pt"))
     assert len(filenames) > 0
     return filenames
 
