@@ -3,14 +3,14 @@ This module only contains the function that will be the entry point that
 will be used to find the model files.
 """
 import glob
+import importlib.metadata
+import importlib.resources
 import os
 import pathlib
-from pkg_resources import resource_filename
-from typing import Optional, Union, List
-import warnings
+from typing import Optional, Union
 
 
-def get_nagl_model_dirs_paths() -> List[str]:
+def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
     """
     Return the paths to the directories including the NAGL model files.
 
@@ -20,29 +20,27 @@ def get_nagl_model_dirs_paths() -> List[str]:
 
     Returns
     -------
-    dir_paths : List[str]
+    dir_paths : list[pathlib.Path]
         The list of directory paths containing the NAGL model files.
     """
     model_types = ["am1bcc"]
-    return [
-        resource_filename("openff.nagl_models", f"models/{model_type}")
-        for model_type in model_types
-    ]
+    base = importlib.resources.files("openff.nagl_models")
+    return [base / "models" / model_type for model_type in model_types]
 
 
-def load_nagl_model_directory_entry_points() -> List[str]:
+def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
     """
     Load the entry points for the NAGL model directories.
 
     Returns
     -------
-    List[str]
+    list[pathlib.Path]
         The list of directory paths containing the NAGL model files.
     """
-    from pkg_resources import iter_entry_points
+    from importlib.metadata import entry_points
 
     dir_paths = []
-    for entry_point in iter_entry_points(group='openforcefield.nagl_model_directory'):
+    for entry_point in entry_points(group='openforcefield.nagl_model_directory'):
         dir_paths.extend(entry_point.load()())
 
     return dir_paths
@@ -50,8 +48,8 @@ def load_nagl_model_directory_entry_points() -> List[str]:
 
 def search_file_path(
     file_name: str,
-    search_paths: Optional[Union[str, List[str]]] = None,
-) -> Optional[str]:
+    search_paths: Optional[Union[str, list[str]]] = None,
+) -> Optional[pathlib.Path]:
     """
     Search for a file in a list of paths.
 
@@ -59,31 +57,31 @@ def search_file_path(
     ----------
     file_name : str
         The name of the file to search for.
-    search_paths : Optional[Union[str, List[str]]], optional
+    search_paths : Optional[Union[str, list[str]]], optional
         The paths to search for the file, by default None
 
     Returns
     -------
-    Optional[str]
+    Optional[pathlib.Path]
         The path to the file if it was found, otherwise None.
     """
     if search_paths is None:
         search_paths = []
 
-    if isinstance(search_paths, str):
+    if isinstance(search_paths, (str, pathlib.Path)):
         search_paths = [search_paths]
 
     search_paths.insert(0, ".")
 
     for path in search_paths:
-        file_path = os.path.join(path, file_name)
-        if os.path.exists(file_path):
-            return os.path.abspath(file_path)
+        file_path = pathlib.Path(path) / file_name
+        if file_path.exists():
+            return file_path.resolve()
 
     return None
 
 
-def validate_nagl_model_path(model: str) -> str:
+def validate_nagl_model_path(model: str) -> pathlib.Path:
     """
     Validate and return the absolute path to a NAGL model file.
 
@@ -97,7 +95,7 @@ def validate_nagl_model_path(model: str) -> str:
 
     Returns
     -------
-    str
+    pathlib.Path
         The absolute path to the model file.
 
     Raises
@@ -112,13 +110,13 @@ def validate_nagl_model_path(model: str) -> str:
 
         >>> from openff.nagl_models import validate_nagl_model_path
         >>> validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
-        '/home/.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt'
+        PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt')
 
     Loading a file from the current working directory::
 
         >>> from openff.nagl_models import validate_nagl_model_path
         >>> validate_nagl_model_path("my-local-gnn.pt")
-        '/home/.../my-local-gnn.pt'
+        PosixPath('/home/.../my-local-gnn.pt')
 
     """
     model_paths = load_nagl_model_directory_entry_points()
@@ -128,13 +126,13 @@ def validate_nagl_model_path(model: str) -> str:
     return full_path
 
 
-def list_available_nagl_models() -> List[str]:
+def list_available_nagl_models() -> list[pathlib.Path]:
     """
     List the available NAGL models.
 
     Returns
     -------
-    List[str]
+    list[pathlib.Path]
         The list of available NAGL models.
 
     Examples
@@ -143,14 +141,15 @@ def list_available_nagl_models() -> List[str]:
 
         >>> from openff.nagl_models import list_available_nagl_models
         >>> list_available_nagl_models()
-        ['/Users/lily/pydev/openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt']
+        [PosixPath('.../am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'),
+        PosixPath('.../am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 
     """
     model_paths = load_nagl_model_directory_entry_points()
     model_files = []
     for path in model_paths:
-        model_files.extend(glob.glob(os.path.join(path, "*.pt")))
-    return sorted([os.path.abspath(f) for f in model_files])
+        model_files.extend(path.glob("*.pt"))
+    return sorted([f.resolve() for f in model_files])
 
 
 def get_models_by_type(
@@ -194,7 +193,7 @@ def get_models_by_type(
     """
     from packaging.version import Version
 
-    base_dir = resource_filename("openff.nagl_models", f"models/{model_type}")
+    base_dir = importlib.resources.files("openff.nagl_models") / "models" / model_type
     if not os.path.isdir(base_dir):
         raise ValueError(
             f"Model type {model_type} not found in openff-nagl-models. "
