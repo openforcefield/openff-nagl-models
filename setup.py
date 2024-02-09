@@ -20,7 +20,6 @@ except:
 
 
 setup(
-    # Self-descriptive entries which should always be present
     name='openff-nagl-models',
     author='Lily Wang',
     author_email='lily.wang@openforcefield.org',
@@ -30,32 +29,13 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     license='MIT',
-
-    # Which Python importable modules should be included when your package is installed
-    # Handled automatically by setuptools. Use 'exclude' to prevent some specific
-    # subpackage(s) from being added, if needed
     packages=find_namespace_packages(include=['openff.*']),
-
-    # Optional include package data to ship with your package
-    # Customize MANIFEST.in if the general case does not suit your needs
-    # Comment out this line to prevent the files from being packaged with your software
     include_package_data=True,
-    python_requires=">=3.8",          # Python version restrictions
-    # Allows `setup.py test` to work correctly with pytest
+    python_requires=">=3.10",          # Python version restrictions
     setup_requires=[] + pytest_runner,
-    # Required packages, pulls from pip if needed
-    # do not use for Conda deployment
-    # install_requires=[],
-    # Additional entries you may want simply uncomment the lines you want and fill in the data
-    # url='openff-nagl.readthedocs.io/en/latest/',  # Website
     platforms=['Linux',
                'Mac OS-X',
                'Unix'],
-    #            'Windows'],            # Valid platforms your code works on, adjust to your flavor
-
-    # Manual control if final package is compressible or not, set False to prevent the .egg from being made
-    # zip_safe=False,
-
     extras_require={
         "test": [
             "pytest>=6.0",
