@@ -24,10 +24,6 @@ dynamic = ["version"]
 test = [
     "pytest>=6.0",
 ]
-doc = [
-    "sphinx",
-    "openff-sphinx-theme @ git+https://github.com/openforcefield/openff-sphinx-theme.git@main",
-]
 
 [project.entry-points."openforcefield.nagl_model_directory"]
 get_nagl_model_dirs_paths = "openff.nagl_models:get_nagl_model_dirs_paths"
