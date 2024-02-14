@@ -31,8 +31,8 @@ setup(
     license='MIT',
     packages=find_namespace_packages(include=['openff.*']),
     include_package_data=True,
-    python_requires=">=3.10",          # Python version restrictions
-    setup_requires=[] + pytest_runner,
+    python_requires=">=3.9",          # Python version restrictions
+    setup_requires=["importlib_resources"] + pytest_runner,
     platforms=['Linux',
                'Mac OS-X',
                'Unix'],

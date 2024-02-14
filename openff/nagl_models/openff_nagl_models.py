@@ -2,12 +2,10 @@
 This module only contains the function that will be the entry point that
 will be used to find the model files.
 """
-import glob
-import importlib.metadata
-import importlib.resources
+import importlib_resources
 import os
 import pathlib
-from typing import Optional, Union
+import typing
 
 
 def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
@@ -24,7 +22,7 @@ def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
         The list of directory paths containing the NAGL model files.
     """
     model_types = ["am1bcc"]
-    base = importlib.resources.files("openff.nagl_models")
+    base = importlib_resources.files("openff.nagl_models")
     return [base / "models" / model_type for model_type in model_types]
 
 
@@ -40,16 +38,21 @@ def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
     from importlib.metadata import entry_points
 
     dir_paths = []
-    for entry_point in entry_points(group='openforcefield.nagl_model_directory'):
-        dir_paths.extend(entry_point.load()())
+    try:
+        for entry_point in entry_points(group="openforcefield.nagl_model_directory"):
+            dir_paths.extend(entry_point.load()())
+    except TypeError:
+        # Fallback for Python 3.9
+        for entry_point in entry_points()["openforcefield.nagl_model_directory"]:
+            dir_paths.extend(entry_point.load()())
 
     return dir_paths
 
 
 def search_file_path(
     file_name: str,
-    search_paths: Optional[Union[str, list[str]]] = None,
-) -> Optional[pathlib.Path]:
+    search_paths: typing.Optional[typing.Union[str, list[str]]] = None,
+) -> typing.Optional[pathlib.Path]:
     """
     Search for a file in a list of paths.
 
@@ -57,12 +60,12 @@ def search_file_path(
     ----------
     file_name : str
         The name of the file to search for.
-    search_paths : Optional[Union[str, list[str]]], optional
+    search_paths : typing.Optional[typing.Union[str, list[str]]], typing.Optional
         The paths to search for the file, by default None
 
     Returns
     -------
-    Optional[pathlib.Path]
+    typing.Optional[pathlib.Path]
         The path to the file if it was found, otherwise None.
     """
     if search_paths is None:
@@ -166,7 +169,7 @@ def get_models_by_type(
     ----------
     model_type : str
         The type of model to search for.
-    production_only : bool, optional
+    production_only : bool, typing.Optional
         Whether to only search for production models, by default False.
 
     Returns
@@ -193,7 +196,7 @@ def get_models_by_type(
     """
     from packaging.version import Version
 
-    base_dir = importlib.resources.files("openff.nagl_models") / "models" / model_type
+    base_dir = importlib_resources.files("openff.nagl_models") / "models" / model_type
     if not os.path.isdir(base_dir):
         raise ValueError(
             f"Model type {model_type} not found in openff-nagl-models. "
