@@ -2,7 +2,6 @@
 Unit and regression test for the openff_nagl_models package.
 """
 
-import glob
 import os
 import importlib.resources
 

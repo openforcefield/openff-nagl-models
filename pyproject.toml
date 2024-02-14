@@ -17,12 +17,16 @@ maintainers = [
     {name = "Lily Wang", email = "lily.wang@openforcefield.org"},
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dynamic = ["version"]
+dependencies = [
+    "importlib_resources",
+]
 
 [project.optional-dependencies]
 test = [
     "pytest>=6.0",
+    "numpy",
 ]
 
 [project.entry-points."openforcefield.nagl_model_directory"]

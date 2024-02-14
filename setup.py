@@ -32,13 +32,15 @@ setup(
     packages=find_namespace_packages(include=['openff.*']),
     include_package_data=True,
     python_requires=">=3.9",          # Python version restrictions
-    setup_requires=["importlib_resources"] + pytest_runner,
+    setup_requires=[] + pytest_runner,
+    install_requires=["importlib_resources"],
     platforms=['Linux',
                'Mac OS-X',
                'Unix'],
     extras_require={
         "test": [
             "pytest>=6.0",
+            "numpy"
         ],
     },
 
