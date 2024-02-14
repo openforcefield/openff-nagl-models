@@ -40,10 +40,6 @@ setup(
         "test": [
             "pytest>=6.0",
         ],
-        "doc": [
-            "sphinx",
-            "openff-sphinx-theme @ git+https://github.com/openforcefield/openff-sphinx-theme.git@main",
-        ]
     },
 
     entry_points={
