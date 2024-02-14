@@ -9,23 +9,14 @@
 This repository contains NAGL models released by the [Open Force Field Initiative](https://openforcefield.org). They are intended to be used by [OpenFF NAGL](https://github.com/openforcefield/openff-nagl).
 
 ## Use
-Installing this package exposes an entry point that makes it easy to access models installed in this package:
-
-```python
->>> from pkg_resources import iter_entry_points
->>> for entry_point in iter_entry_points(group='openforcefield.nagl_model_directory'):
-...     paths = entry_point.load()()
-...     print(paths)
-...
-['/home/.../openff-nagl-models/openff/nagl_models/models']
-```
+Installing this package exposes an entry point that makes it easy to access models installed in this package.
 
 A convenience function is provided to wrap this for you:
 
 ```python
 >>> from openff.nagl_models import load_nagl_model_directory_entry_points
 >>> load_nagl_model_directory_entry_points()
-['/home/.../openff-nagl-models/openff/nagl_models/models']
+[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc')]
 ```
 
 You can also list all available models **from all entry points**:
@@ -33,7 +24,7 @@ You can also list all available models **from all entry points**:
 ```python
 >>> from openff.nagl_models import list_available_nagl_models
 >>> list_available_nagl_models()
-['.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt', '.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.1.0-rc.1.pt']
+[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 ```
 
 Or validate if a model name is found in the local directory, or an entry point directory:
@@ -41,7 +32,16 @@ Or validate if a model name is found in the local directory, or an entry point d
 ```python
 >>> from openff.nagl_models import validate_nagl_model_path
 >>> validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
-'/home/.../openff-nagl-models/openff/nagl_models/models/openff-gnn-am1bcc-0.0.1-alpha.1.pt'
+PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt')
+```
+
+Finally, if you want to find all models for a particular type, use `get_models_by type`.
+These will come sorted according to semantic versioning, where the latest release is last:
+
+```python
+>>> from openff.nagl_models import get_models_by_type
+>>> get_models_by_type("am1bcc")
+[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 ```
 
 ## Versions
