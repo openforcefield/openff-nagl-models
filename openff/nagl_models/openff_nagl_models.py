@@ -38,7 +38,7 @@ def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
     from importlib.metadata import entry_points
 
     dir_paths = []
-    for entry_point in entry_points(group='openforcefield.nagl_model_directory'):
+    for entry_point in entry_points()["openforcefield.nagl_model_directory"]:
         dir_paths.extend(entry_point.load()())
 
     return dir_paths
