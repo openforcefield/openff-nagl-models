@@ -47,6 +47,7 @@ These will come sorted according to semantic versioning, where the latest releas
 ## Versions
 - `v0.0.1-alpha.1`: a pre-production model to use for experimentation. We do *not* recommend using this model to assign charges in scientific work.
 - `v0.1.0-rc1`: a pre-production model to use to assign AM1-BCC partial charges.
+- `v0.1.0-rc2`: a pre-production model to use to assign AM1-BCC partial charges.
 
 
 #### Acknowledgements
