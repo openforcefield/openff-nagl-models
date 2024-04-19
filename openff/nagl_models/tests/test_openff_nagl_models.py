@@ -65,6 +65,7 @@ def test_get_models_by_type():
     expected_stems = [
         "openff-gnn-am1bcc-0.0.1-alpha.1",
         "openff-gnn-am1bcc-0.1.0-rc.1",
+        "openff-gnn-am1bcc-0.1.0-rc.2",
     ]
 
     assert all_model_stems == expected_stems
