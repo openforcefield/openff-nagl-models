@@ -14,6 +14,24 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
+## v0.3.0 -
+
+### Authors
+<!-- GitHub usernames of contributors to this release -->
+- @lilyminium
+
+### Added
+- Added the openff-gnn-am1bcc-0.1.0-rc.3.pt model (PR #27)
+
+## v0.2.0 - 2024-04-19
+
+### Authors
+<!-- GitHub usernames of contributors to this release -->
+- @lilyminium
+
+### Added
+- Added the openff-gnn-am1bcc-0.1.0-rc.2.pt model (PR #26)
+
 ## v0.1.2 - 2024-02-09
 
 ### Authors
