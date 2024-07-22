@@ -21,7 +21,7 @@ The rules for this file:
 - @lilyminium
 
 ### Added
-- Added the openff-gnn-am1bcc-0.1.0-rc.3.pt model (PR #27)
+- Added the openff-gnn-am1bcc-0.1.0-rc.3.pt model (PRs #27, #30)
 
 ## v0.2.0 - 2024-04-19
 
