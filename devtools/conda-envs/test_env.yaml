@@ -10,7 +10,7 @@ dependencies:
 
     # Testing
   - pytest
-  - openff-nagl-base >=0.3.0
+  - openff-nagl-base >=0.4.0
 
   - pip:
     - importlib_resources
