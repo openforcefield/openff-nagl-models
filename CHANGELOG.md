@@ -14,7 +14,7 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
-## v0.3.0 - 2024-07-22
+## v0.3.0 - 2024-07-29
 
 ### Authors
 <!-- GitHub usernames of contributors to this release -->
