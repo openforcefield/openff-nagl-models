@@ -53,3 +53,4 @@ jobs:
           package_name: 'openff-nagl-models'
           module_name: 'openff.nagl_models'
           wheels: false
+          test_deps: "pytest numpy"
