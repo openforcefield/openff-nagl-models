@@ -1,4 +1,4 @@
-# AM1-BCC GNN v0.1.0-rc2
+# AM1-BCC GNN v0.1.0-rc3
 
 This model is trained to produce AM1-BCC charges similar to OpenEye's implementation.
 The neural network model is identical to the the previously released
