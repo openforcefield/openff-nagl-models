@@ -111,7 +111,7 @@ This model was trained, validated, and tested on the following datasets:
 | OpenFF Industry Benchmark Set (v1.1)     |          |            | 13671 | [QCArchive Submission][qca-openff-benchmark]                |
 | SPICE                                    |          |            | 14652 | [SPICE dataset][spice]                                      |
 | Peptides with PTMs                       |          |            | 6073  | Peptide chains with common post-translational modifications |
-| Total                                    | 271204   | 61593      | 34396 |                                                             |
+| Total                                    | 311113   | 61593      | 51500 |                                                             |
 
 
 [enamine-10240]: https://enamine.net/compound-libraries/diversity-libraries/dds-10560
