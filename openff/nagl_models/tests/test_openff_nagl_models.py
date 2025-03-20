@@ -71,7 +71,7 @@ def test_get_models_by_type():
 
     assert all_model_stems == expected_stems
 
-def test_get_models_by_type():
+def test_get_models_by_type_does_not_exist():
     err = "Model type does-not-exist not found in openff-nagl-models."
     with pytest.raises(ValueError, match=err):
         get_models_by_type(model_type="does-not-exist")
