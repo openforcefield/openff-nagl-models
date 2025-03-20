@@ -1,4 +1,4 @@
-name: test
+name: openff-nagl-models-test
 
 channels:
   - conda-forge
@@ -7,10 +7,11 @@ dependencies:
     # Base depends
   - python
   - pip
+  - importlib_resources
 
     # Testing
   - pytest
+  - pytest-socket
+  - pytest-randomly
   - openff-nagl-base >=0.4.0
 
-  - pip:
-    - importlib_resources
