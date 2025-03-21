@@ -4,7 +4,7 @@ Unit and regression test for the openff_nagl_models package.
 
 import os
 import importlib.resources
-
+from importlib_metadata import entry_points
 
 import pytest
 from openff.nagl_models import validate_nagl_model_path, list_available_nagl_models
@@ -51,8 +51,9 @@ def test_list_models():
 
 
 def test_entry_points():
-    from pkg_resources import iter_entry_points
-    for entry_point in iter_entry_points(group='openforcefield.nagl_model_directory'):
+    for entry_point in entry_points().select(
+        group='openforcefield.nagl_model_directory',
+    ):
         paths = entry_point.load()()
         for path in paths:
             assert os.path.exists(path)
@@ -71,7 +72,7 @@ def test_get_models_by_type():
 
     assert all_model_stems == expected_stems
 
-def test_get_models_by_type():
+def test_get_models_by_type_does_not_exist():
     err = "Model type does-not-exist not found in openff-nagl-models."
     with pytest.raises(ValueError, match=err):
         get_models_by_type(model_type="does-not-exist")
