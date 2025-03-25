@@ -4,19 +4,19 @@ import pytest
 from pytest_socket import disable_socket, enable_socket, SocketBlockedError
 import platformdirs
 
-from openff.nagl_models._dynamic_fetch import get_most_recent_asset_url
+from openff.nagl_models._dynamic_fetch import get_model
 
 
-def test_get_known_models():
-    for known_model in [
-        "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
-        "openff-gnn-am1bcc-0.1.0-rc.1.pt",
-        "openff-gnn-am1bcc-0.1.0-rc.2.pt",
-        "openff-gnn-am1bcc-0.1.0-rc.3.pt",
-    ]:
-        assert get_most_recent_asset_url(known_model).endswith(known_model)
+@pytest.mark.parametrize("known_model", [
+    "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
+    "openff-gnn-am1bcc-0.1.0-rc.1.pt",
+    "openff-gnn-am1bcc-0.1.0-rc.2.pt",
+    "openff-gnn-am1bcc-0.1.0-rc.3.pt",
+])
+def test_get_known_models(known_model):
+    assert get_model(known_model).endswith(known_model)
 
-        assert "OPENFF_NAGL_MODELS" in get_most_recent_asset_url(known_model)
+    assert "OPENFF_NAGL_MODELS" in get_model(known_model)
 
 
 def test_access_interent_with_empty_cache():
@@ -32,16 +32,16 @@ def test_access_interent_with_empty_cache():
     with pytest.raises(
         SocketBlockedError,
     ):
-        get_most_recent_asset_url("openff-gnn-am1bcc-0.1.0-rc.3.pt")
+        get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
 
 def test_file_exists_in_cache_without_internet():
     # since tests can run in different orders, make sure the file exists already
-    assert get_most_recent_asset_url("openff-gnn-am1bcc-0.1.0-rc.3.pt")
+    assert get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
     disable_socket()
 
-    get_most_recent_asset_url("openff-gnn-am1bcc-0.1.0-rc.3.pt")
+    get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
 
 def test_error_on_missing_file():
@@ -49,4 +49,17 @@ def test_error_on_missing_file():
         FileNotFoundError,
         match="Could not find asset with name 'FOOBAR",
     ):
-        get_most_recent_asset_url("FOOBAR.txt")
+        get_model("FOOBAR.txt")
+
+@pytest.mark.parametrize("model", [
+    "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
+    "openff-gnn-am1bcc-0.1.0-rc.1.pt",
+    "openff-gnn-am1bcc-0.1.0-rc.2.pt",
+    "openff-gnn-am1bcc-0.1.0-rc.3.pt",
+])
+def test_all_models_loadable(model):
+    pytest.importorskip("openff.nagl")
+
+    from openff.nagl.nn._models import GNNModel
+
+    GNNModel.load(get_model(model), eval_mode=True)

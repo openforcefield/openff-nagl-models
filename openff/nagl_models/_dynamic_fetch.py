@@ -24,7 +24,7 @@ releases: dict[Version:str] = {
 }
 
 
-def get_most_recent_asset_url(filename: str) -> str:
+def get_model(filename: str) -> str:
     pathlib.Path(platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS").mkdir(
         exist_ok=True
     )
@@ -47,6 +47,7 @@ def get_most_recent_asset_url(filename: str) -> str:
                 )
 
                 assert _get_sha256(cached_path) == KNOWN_HASHES[filename], f"Hash mismatch for {filename}"
+                assert cached_path.exists()
 
                 return cached_path.as_posix()
 
