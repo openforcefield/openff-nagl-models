@@ -35,6 +35,8 @@ def test_access_interent_with_empty_cache():
     with pytest.raises(
         SocketBlockedError,
     ):
+        get_model.cache_clear()
+
         get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
 

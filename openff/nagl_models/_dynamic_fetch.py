@@ -7,6 +7,7 @@ import urllib.request
 import platformdirs
 from packaging.version import Version
 
+
 RELEASES_URL = "https://api.github.com/repos/openforcefield/openff-nagl-models/releases"
 
 KNOWN_HASHES = {
