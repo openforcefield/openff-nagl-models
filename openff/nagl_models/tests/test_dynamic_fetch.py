@@ -7,12 +7,15 @@ import platformdirs
 from openff.nagl_models._dynamic_fetch import get_model
 
 
-@pytest.mark.parametrize("known_model", [
-    "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
-    "openff-gnn-am1bcc-0.1.0-rc.1.pt",
-    "openff-gnn-am1bcc-0.1.0-rc.2.pt",
-    "openff-gnn-am1bcc-0.1.0-rc.3.pt",
-])
+@pytest.mark.parametrize(
+    "known_model",
+    [
+        "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
+        "openff-gnn-am1bcc-0.1.0-rc.1.pt",
+        "openff-gnn-am1bcc-0.1.0-rc.2.pt",
+        "openff-gnn-am1bcc-0.1.0-rc.3.pt",
+    ],
+)
 def test_get_known_models(known_model):
     assert get_model(known_model).endswith(known_model)
 
@@ -51,12 +54,16 @@ def test_error_on_missing_file():
     ):
         get_model("FOOBAR.txt")
 
-@pytest.mark.parametrize("model", [
-    "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
-    "openff-gnn-am1bcc-0.1.0-rc.1.pt",
-    "openff-gnn-am1bcc-0.1.0-rc.2.pt",
-    "openff-gnn-am1bcc-0.1.0-rc.3.pt",
-])
+
+@pytest.mark.parametrize(
+    "model",
+    [
+        "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
+        "openff-gnn-am1bcc-0.1.0-rc.1.pt",
+        "openff-gnn-am1bcc-0.1.0-rc.2.pt",
+        "openff-gnn-am1bcc-0.1.0-rc.3.pt",
+    ],
+)
 def test_all_models_loadable(model):
     pytest.importorskip("openff.nagl")
 
