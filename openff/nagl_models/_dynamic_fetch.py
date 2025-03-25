@@ -1,10 +1,11 @@
-import urllib.request
-import json
-from packaging.version import Version
-import platformdirs
-import pathlib
+import functools
 import hashlib
+import json
+import pathlib
+import urllib.request
 
+import platformdirs
+from packaging.version import Version
 
 RELEASES_URL = "https://api.github.com/repos/openforcefield/openff-nagl-models/releases"
 
@@ -16,7 +17,9 @@ KNOWN_HASHES = {
 }
 
 
+@functools.lru_cache()
 def get_model(filename: str) -> str:
+    """Return the path of a model as cached on disk, downloading if necessary."""
     pathlib.Path(platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS").mkdir(
         exist_ok=True
     )
