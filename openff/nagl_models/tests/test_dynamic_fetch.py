@@ -1,10 +1,35 @@
-import shutil
+import json
 import pathlib
-import pytest
-from pytest_socket import disable_socket, enable_socket, SocketBlockedError
-import platformdirs
+import shutil
+import urllib.request
 
+import platformdirs
+import pytest
+from pytest_socket import SocketBlockedError, disable_socket
+
+import openff.nagl_models._dynamic_fetch
+from openff.nagl_models import __file__ as root
 from openff.nagl_models._dynamic_fetch import get_model
+
+
+def mocked_urlretrieve(url, filename):
+    """Mock downloading files from assets by copying from the models/ directory."""
+    old = (
+        pathlib.Path(root).parent / "models/am1bcc" / pathlib.Path(filename).name
+    ).as_posix()
+    new = (platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS" / filename).as_posix()
+
+    shutil.copy(old, new)
+
+    return new, None
+
+
+def mocked_get_release_metadata():
+    # can regenerate this file with
+    # $ wget https://api.github.com/repos/openforcefield/openff-nagl-models/releases
+    return json.loads(
+        open(pathlib.Path(root).parent / "tests/data/releases.json").read()
+    )
 
 
 @pytest.mark.parametrize(
@@ -16,10 +41,22 @@ from openff.nagl_models._dynamic_fetch import get_model
         "openff-gnn-am1bcc-0.1.0-rc.3.pt",
     ],
 )
-def test_get_known_models(known_model):
-    assert get_model(known_model).endswith(known_model)
+def test_get_known_models(monkeypatch, known_model):
+    with monkeypatch.context() as m:
+        m.setattr(
+            urllib.request,
+            "urlretrieve",
+            mocked_urlretrieve,
+        )
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
 
-    assert "OPENFF_NAGL_MODELS" in get_model(known_model)
+        assert get_model(known_model).endswith(known_model)
+
+        assert "OPENFF_NAGL_MODELS" in get_model(known_model)
 
 
 def test_access_interent_with_empty_cache():
@@ -40,13 +77,25 @@ def test_access_interent_with_empty_cache():
         get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
 
-def test_file_exists_in_cache_without_internet():
+def test_file_exists_in_cache_without_internet(monkeypatch):
     # since tests can run in different orders, make sure the file exists already
-    assert get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
+    with monkeypatch.context() as m:
+        m.setattr(
+            urllib.request,
+            "urlretrieve",
+            mocked_urlretrieve,
+        )
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
 
-    disable_socket()
+        assert get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
-    get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
+        disable_socket()
+
+        get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
 
 def test_error_on_missing_file():
@@ -66,9 +115,21 @@ def test_error_on_missing_file():
         "openff-gnn-am1bcc-0.1.0-rc.3.pt",
     ],
 )
-def test_all_models_loadable(model):
+def test_all_models_loadable(model, monkeypatch):
     pytest.importorskip("openff.nagl")
 
     from openff.nagl.nn._models import GNNModel
 
-    GNNModel.load(get_model(model), eval_mode=True)
+    with monkeypatch.context() as m:
+        m.setattr(
+            urllib.request,
+            "urlretrieve",
+            mocked_urlretrieve,
+        )
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+
+        GNNModel.load(get_model(model), eval_mode=True)

@@ -18,6 +18,10 @@ KNOWN_HASHES = {
 }
 
 
+def get_release_metadata() -> list[dict]:
+    return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
+
+
 @functools.lru_cache()
 def get_model(filename: str) -> str:
     """Return the path of a model as cached on disk, downloading if necessary."""
@@ -32,7 +36,7 @@ def get_model(filename: str) -> str:
 
         return cached_path.as_posix()
 
-    release_metadata: list[dict] = json.load(urllib.request.urlopen(RELEASES_URL))
+    release_metadata = get_release_metadata()
 
     # tags with "v" prefix can't easily be sorted, but the result of passing through Version
     # are not necessarily 1:1 with the metadata in the releases, keep both and map between
@@ -44,15 +48,17 @@ def get_model(filename: str) -> str:
         release = releases[version]
         for file in release["assets"]:
             if file["name"] == filename:
-                urllib.request.urlretrieve(
-                    file["browser_download_url"],
-                    cached_path,
+                path_to_file, _ = urllib.request.urlretrieve(
+                    url=file["browser_download_url"],
+                    filename=cached_path.as_posix(),
                 )
+
+                assert cached_path.exists()
+                assert path_to_file == cached_path.as_posix()
 
                 assert _get_sha256(cached_path) == KNOWN_HASHES[filename], (
                     f"Hash mismatch for {filename}"
                 )
-                assert cached_path.exists()
 
                 return cached_path.as_posix()
 
