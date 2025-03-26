@@ -1,10 +1,12 @@
 [build-system]
 requires = [
-  "setuptools >= 40.9.0",
-  "versioneer[toml]==0.26",
-  "wheel",
+  "setuptools",
+  "versioningit",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {}
 
 [project]
 name = "openff-nagl-models"
@@ -17,11 +19,8 @@ maintainers = [
     {name = "Lily Wang", email = "lily.wang@openforcefield.org"},
 ]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
-dependencies = [
-    "importlib_resources",
-]
 
 [project.optional-dependencies]
 test = [
@@ -33,8 +32,10 @@ test = [
 get_nagl_model_dirs_paths = "openff.nagl_models:get_nagl_model_dirs_paths"
 
 [project.urls]
-source = "https://github.com/openforcefield/openff-nagl-models"
-# documentation = "https://openff-nagl-models.readthedocs.io"
+Repository = "https://github.com/openforcefield/openff-nagl-models"
+Documentation = "https://openff-nagl-models.readthedocs.io"
+
+[tool.versioningit]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -42,10 +43,7 @@ testpaths = [
     "openff/nagl_models/tests",
 ]
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "openff/nagl_models/_version.py"
-versionfile_build = "openff/nagl_models/_version.py"
-tag_prefix = "v"
-parentdir_prefix = "openff-nagl-models-" 
+[tool.coverage.run]
+omit = [
+    "*/*/tests/*",
+]

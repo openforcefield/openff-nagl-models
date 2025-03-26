@@ -1,9 +1,10 @@
 """
-Open NAGL Models
+OpenFF NAGL Models
 Models used with NAGL
 """
 
-# Add imports here
+from importlib.metadata import version
+
 from .openff_nagl_models import (
     get_nagl_model_dirs_paths,
     load_nagl_model_directory_entry_points,
@@ -12,6 +13,4 @@ from .openff_nagl_models import (
     get_models_by_type
 )
 
-# Handle versioneer
-from . import _version
-__version__ = _version.get_versions()['version']
+__version__ = version("openff.toolkit")
