@@ -98,11 +98,25 @@ def test_file_exists_in_cache_without_internet(monkeypatch):
         get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt")
 
 
-def test_error_on_missing_file():
-    with pytest.raises(
-        FileNotFoundError,
-        match="Could not find asset with name 'FOOBAR",
+def test_error_on_missing_file(monkeypatch):
+    with (
+        pytest.raises(
+            FileNotFoundError,
+            match="Could not find asset with name 'FOOBAR",
+        ),
+        monkeypatch.context() as m,
     ):
+        m.setattr(
+            urllib.request,
+            "urlretrieve",
+            mocked_urlretrieve,
+        )
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+
         get_model("FOOBAR.txt")
 
 
