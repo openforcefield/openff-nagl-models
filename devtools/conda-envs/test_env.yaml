@@ -8,6 +8,7 @@ dependencies:
   - python
   - pip
   - platformdirs
+  - versioningit
 
     # Testing
   - pytest

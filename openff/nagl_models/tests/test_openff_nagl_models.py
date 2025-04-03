@@ -4,7 +4,7 @@ Unit and regression test for the openff_nagl_models package.
 
 import os
 import importlib.resources
-from importlib_metadata import entry_points
+from importlib.metadata import entry_points
 
 import pytest
 from openff.nagl_models import validate_nagl_model_path, list_available_nagl_models

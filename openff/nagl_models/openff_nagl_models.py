@@ -2,7 +2,7 @@
 This module only contains the function that will be the entry point that
 will be used to find the model files.
 """
-import importlib_resources
+import importlib.resources
 import os
 import pathlib
 import typing
@@ -22,7 +22,7 @@ def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
         The list of directory paths containing the NAGL model files.
     """
     model_types = ["am1bcc"]
-    base = importlib_resources.files("openff.nagl_models")
+    base = importlib.resources.files("openff.nagl_models")
     return [base / "models" / model_type for model_type in model_types]
 
 
@@ -196,7 +196,7 @@ def get_models_by_type(
     """
     from packaging.version import Version
 
-    base_dir = importlib_resources.files("openff.nagl_models") / "models" / model_type
+    base_dir = importlib.resources.files("openff.nagl_models") / "models" / model_type
     if not os.path.isdir(base_dir):
         raise ValueError(
             f"Model type {model_type} not found in openff-nagl-models. "
