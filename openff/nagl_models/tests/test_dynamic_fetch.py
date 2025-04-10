@@ -59,7 +59,7 @@ def test_get_known_models(monkeypatch, known_model):
         assert "OPENFF_NAGL_MODELS" in get_model(known_model)
 
 
-def test_access_interent_with_empty_cache():
+def test_access_internet_with_empty_cache():
     cache_path = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
     if cache_path.exists():
