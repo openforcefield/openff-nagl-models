@@ -17,6 +17,7 @@ KNOWN_HASHES = {
     "openff-gnn-am1bcc-0.1.0-rc.3.pt": "144ed56e46c5b3ad80157b342c8c0f8f7340e4d382a678e30dd300c811646bd0",
 }
 
+CACHE_DIR = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
@@ -25,11 +26,9 @@ def get_release_metadata() -> list[dict]:
 @functools.lru_cache()
 def get_model(filename: str) -> str:
     """Return the path of a model as cached on disk, downloading if necessary."""
-    pathlib.Path(platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS").mkdir(
-        exist_ok=True
-    )
+    pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
-    cached_path = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS" / filename
+    cached_path = CACHE_DIR / filename
 
     if cached_path.exists():
         assert _get_sha256(cached_path) == KNOWN_HASHES[filename]
