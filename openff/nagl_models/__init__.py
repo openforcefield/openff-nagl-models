@@ -13,4 +13,4 @@ from .openff_nagl_models import (
     get_models_by_type
 )
 
-__version__ = version("openff.toolkit")
+__version__ = version("openff.nagl_models")
