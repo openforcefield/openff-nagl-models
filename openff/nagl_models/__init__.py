@@ -23,4 +23,4 @@ __all__ = (
     "get_model",
 )
 
-__version__ = version("openff.toolkit")
+__version__ = version("openff.nagl_models")
