@@ -131,7 +131,13 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
 
 def list_available_nagl_models() -> list[pathlib.Path]:
     """
-    List the available NAGL models.
+    List the full paths of all available NAGL models.
+
+    This includes loading NAGL models via
+      * Python's `entry_points` mechanism
+      * This package's dynamic fetching and caching of GitHub release assets
+
+    Identical models found with each method will be listed multiple times.
 
     Returns
     -------
@@ -148,11 +154,23 @@ def list_available_nagl_models() -> list[pathlib.Path]:
         PosixPath('.../am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 
     """
+    from openff.nagl_models._dynamic_fetch import KNOWN_HASHES, CACHE_DIR
+
     model_paths = load_nagl_model_directory_entry_points()
     model_files = []
     for path in model_paths:
         model_files.extend(path.glob("*.pt"))
-    return sorted([f.resolve() for f in model_files])
+
+    entry_point_paths = sorted([f.resolve() for f in model_files])
+
+    # look for all .pt files in the cache directory, but only those that are
+    # expected to also be found in release assets
+    cached_paths = [
+        cached_file for cached_file in CACHE_DIR.rglob("*.pt")
+        if cached_file.name in KNOWN_HASHES
+    ]
+
+    return entry_point_paths + cached_paths
 
 
 def get_models_by_type(

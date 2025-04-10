@@ -46,8 +46,13 @@ def test_local_validation(tmpdir):
 def test_list_models():
     """Test that we can list models."""
     model_names = find_model_files()
+
+    # also returns cached files, if they exist
     listed_model_names = list_available_nagl_models()
-    assert listed_model_names == model_names
+
+    # just make sure all files from entry points are in the list
+    for model_name in model_names:
+        assert model_name in listed_model_names
 
 
 def test_entry_points():
