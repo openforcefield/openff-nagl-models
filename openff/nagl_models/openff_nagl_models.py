@@ -88,13 +88,26 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
     """
     Validate and return the absolute path to a NAGL model file.
 
+    If a matching file is found in the current working directory, that is returned.
+
+    Files accessible via the `entry_points` machinery are then checked. If a file
+    matching the model name is found, that is returned.
+
+    If no matching file is found via `entry_points` and it is not a "known" model,
+    an error is raised.
+
+    If no matching file is found via `entry_points` and it is a "known" model, the cache
+    is first checked. If the model is found in the cache, that is returned. If not, the
+    model is downloaded from the assets of a GitHub releases page.
+
     Parameters
     ----------
     model : str
         The name or path of the model file to search for.
         This function searches for model files either in the
-        current working directory or in the directories
-        found in the ``openforcefield.nagl_model_directory`` entry point.
+        current working directory, in the directories
+        found in the ``openforcefield.nagl_model_directory``
+        entry point, or the `OPENFF_NAGL_MODELS` cache.
 
     Returns
     -------
@@ -122,11 +135,29 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
         PosixPath('/home/.../my-local-gnn.pt')
 
     """
-    model_paths = load_nagl_model_directory_entry_points()
-    full_path = search_file_path(model, model_paths)
-    if full_path is None:
-        raise FileNotFoundError(f"Could not find {model}")
-    return full_path
+    from openff.nagl_models._dynamic_fetch import CACHE_DIR, KNOWN_HASHES, get_model
+
+    entry_point_paths = load_nagl_model_directory_entry_points()
+    full_path = search_file_path(model, entry_point_paths)
+
+    if full_path is not None:
+        # if this model is bundled in entry points, just return that one
+        # before checking the cache or considering a network call
+        return full_path
+
+    if model in KNOWN_HASHES:
+        # first check cache ...
+        full_path = search_file_path(model, CACHE_DIR)
+
+        if full_path is not None:
+            # ... return file if found in cache
+            return full_path
+        else:
+            # otherwise download it, using a network call as a last resort
+            return get_model(model)
+
+    # if not found in entry points or "known" models, error
+    raise FileNotFoundError(f"Could not find {model}")
 
 
 def list_available_nagl_models() -> list[pathlib.Path]:
