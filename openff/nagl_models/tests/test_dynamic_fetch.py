@@ -59,6 +59,7 @@ def test_get_known_models(monkeypatch, known_model):
 
         assert "OPENFF_NAGL_MODELS" in get_model(known_model)
 
+
 @pytest.fixture
 def hide_cache():
     cache_dir = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
@@ -77,11 +78,9 @@ def hide_cache():
             shutil.rmtree(cache_dir)
         shutil.move(alt_dir, cache_dir)
 
+
 def test_access_internet_with_empty_cache(hide_cache):
     cache_path = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
-
-    #if cache_path.exists():
-    #    shutil.rmtree(cache_path)
 
     disable_socket()
 
@@ -166,15 +165,17 @@ def test_all_models_loadable(model, monkeypatch):
 
         GNNModel.load(get_model(model), eval_mode=True)
 
+
 def test_get_model_by_doi(hide_cache):
-    get_model("my_favorite_model.pt",
-          doi="10.5072/zenodo.278300",
-          file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81")
+    get_model(
+        "my_favorite_model.pt",
+        doi="10.5072/zenodo.278300",
+        file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81",
+    )
+
 
 def test_get_model_hash_comparison_fails():
     with pytest.raises(AssertionError):
-        get_model("my_favorite_model.pt",
-                  doi="10.5072/zenodo.278300",
-                  file_hash="wrong_hash")
-
-
+        get_model(
+            "my_favorite_model.pt", doi="10.5072/zenodo.278300", file_hash="wrong_hash"
+        )

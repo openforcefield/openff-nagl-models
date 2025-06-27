@@ -20,14 +20,15 @@ KNOWN_HASHES = {
 
 CACHE_DIR = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
+
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
 
 
 @functools.lru_cache()
-def get_model(filename: str,
-              doi: None | str = None,
-              file_hash: None | str = None) -> str:
+def get_model(
+    filename: str, doi: None | str = None, file_hash: None | str = None
+) -> str:
     """Return the path of a model as cached on disk, downloading if necessary."""
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
@@ -64,9 +65,9 @@ def get_model(filename: str,
                 assert path_to_file == cached_path.as_posix()
 
                 if check_hash:
-                    assert _get_sha256(cached_path) == check_hash, (
-                        f"Hash mismatch for {filename}"
-                    )
+                    assert (
+                        _get_sha256(cached_path) == check_hash
+                    ), f"Hash mismatch for {filename}"
 
                 return cached_path.as_posix()
 
@@ -75,16 +76,19 @@ def get_model(filename: str,
 
         # Remove "sandbox." to convert this to "real" zenodo before merge
         # Or keep in with a testing flag?
-        file_url = f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
-        path_to_file, _ = urllib.request.urlretrieve(file_url,
-                                                     filename=cached_path.as_posix())
+        file_url = (
+            f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
+        )
+        path_to_file, _ = urllib.request.urlretrieve(
+            file_url, filename=cached_path.as_posix()
+        )
         assert cached_path.exists()
         assert path_to_file == cached_path.as_posix()
 
         if check_hash:
-            assert _get_sha256(cached_path) ==file_hash, (
-                f"Hash mismatch for {filename}"
-            )
+            assert (
+                _get_sha256(cached_path) == file_hash
+            ), f"Hash mismatch for {filename}"
         return cached_path.as_posix()
 
     raise FileNotFoundError(
