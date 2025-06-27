@@ -1,6 +1,7 @@
 import functools
 import hashlib
 import json
+import re
 import pathlib
 import urllib.request
 
@@ -24,14 +25,21 @@ def get_release_metadata() -> list[dict]:
 
 
 @functools.lru_cache()
-def get_model(filename: str) -> str:
+def get_model(filename: str,
+              doi: None | str = None,
+              file_hash: None | str = None) -> str:
     """Return the path of a model as cached on disk, downloading if necessary."""
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     cached_path = CACHE_DIR / filename
 
+    check_hash = file_hash
+    if check_hash is None and filename in KNOWN_HASHES:
+        check_hash = KNOWN_HASHES[filename]
+
     if cached_path.exists():
-        assert _get_sha256(cached_path) == KNOWN_HASHES[filename]
+        if check_hash:
+            assert _get_sha256(cached_path) == check_hash
 
         return cached_path.as_posix()
 
@@ -55,11 +63,29 @@ def get_model(filename: str) -> str:
                 assert cached_path.exists()
                 assert path_to_file == cached_path.as_posix()
 
-                assert _get_sha256(cached_path) == KNOWN_HASHES[filename], (
-                    f"Hash mismatch for {filename}"
-                )
+                if check_hash:
+                    assert _get_sha256(cached_path) == check_hash, (
+                        f"Hash mismatch for {filename}"
+                    )
 
                 return cached_path.as_posix()
+
+    if doi:
+        zenodo_id = re.findall("10.5072/zenodo.([0-9]+)", doi)[0]
+
+        # Remove "sandbox." to convert this to "real" zenodo before merge
+        # Or keep in with a testing flag?
+        file_url = f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
+        path_to_file, _ = urllib.request.urlretrieve(file_url,
+                                                     filename=cached_path.as_posix())
+        assert cached_path.exists()
+        assert path_to_file == cached_path.as_posix()
+
+        if check_hash:
+            assert _get_sha256(cached_path) ==file_hash, (
+                f"Hash mismatch for {filename}"
+            )
+        return cached_path.as_posix()
 
     raise FileNotFoundError(
         f"Could not find asset with name '{filename}' in any release"
