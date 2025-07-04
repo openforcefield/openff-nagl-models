@@ -27,9 +27,35 @@ def get_release_metadata() -> list[dict]:
 
 @functools.lru_cache()
 def get_model(
-    filename: str, doi: None | str = None, file_hash: None | str = None
+    filename: str, doi: None | str = None, file_hash: None | str = None, _sandbox: bool = False
 ) -> str:
-    """Return the path of a model as cached on disk, downloading if necessary."""
+    """
+    Return the path of a model as cached on disk, downloading if necessary.
+
+    Parameters
+    ----------
+    filename : str
+        The name of the file to search for.
+    doi : typing.Optional[str], default=None
+        The Zenodo DOI to use as a backup location for fetching the model file if it's not found in the local cache
+        or in the
+        [release metadata of an openff-nagl-models release](https://github.com/openforcefield/openff-nagl-models/releases)
+        on GitHub. For example: "10.5072/zenodo.278300"
+    file_hash : typing.Optional[str], default=None
+        The sha256 hash of the model file to verify the correct contents. Hash checks are automatically performed
+        on some OpenFF-released NAGL models. But if the model isn't released by OpenFF and this argument is
+        not provided or has a value of `None`, then no hash check is performed. Raises HashComparisonFailedError if
+        unsuccessful.
+    _sandbox : bool, default=False
+        Whether to connect to sandbox.zenodo.com instead of zenodo.com. Used for testing.
+
+    Returns
+    -------
+    typing.Optional[pathlib.Path]
+        The path to the file if it was found, otherwise None.
+
+
+    """
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     cached_path = CACHE_DIR / filename
@@ -86,9 +112,10 @@ def get_model(
         assert path_to_file == cached_path.as_posix()
 
         if check_hash:
-            assert (
-                _get_sha256(cached_path) == file_hash
-            ), f"Hash mismatch for {filename}"
+            actual_hash = _get_sha256(cached_path)
+            if actual_hash != file_hash:
+                raise HashComparisonFailedError(f"NAGL model file hash check failed. Expected hash is {file_hash} but computed hash is {actual_hash}")
+
         return cached_path.as_posix()
 
     raise FileNotFoundError(
