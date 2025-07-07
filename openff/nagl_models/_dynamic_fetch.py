@@ -4,7 +4,6 @@ import json
 import re
 import pathlib
 import urllib.request
-from openff.utilities.exceptions import OpenFFError
 import platformdirs
 from packaging.version import Version
 
@@ -21,11 +20,11 @@ KNOWN_HASHES = {
 CACHE_DIR = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
 
-class HashComparisonFailedException(OpenFFError):
+class HashComparisonFailedException(Exception):
     """Exception raised when a NAGL file being loaded fails a comparison to a known or user-provided hash."""
 
 
-class UnableToParseDOIException(OpenFFError):
+class UnableToParseDOIException(Exception):
     """Exception raised when a Zenodo DOI is unable to be parsed according to the expected pattern."""
 
 
