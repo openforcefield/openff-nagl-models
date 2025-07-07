@@ -10,7 +10,7 @@ from pytest_socket import SocketBlockedError, disable_socket
 
 import openff.nagl_models._dynamic_fetch
 from openff.nagl_models import __file__ as root
-from openff.nagl_models._dynamic_fetch import get_model
+from openff.nagl_models._dynamic_fetch import get_model, HashComparisonFailedException
 
 
 def mocked_urlretrieve(url, filename):
@@ -175,7 +175,7 @@ def test_get_model_by_doi(hide_cache):
 
 
 def test_get_model_hash_comparison_fails():
-    with pytest.raises(AssertionError):
+    with pytest.raises(HashComparisonFailedException):
         get_model(
             "my_favorite_model.pt", doi="10.5072/zenodo.278300", file_hash="wrong_hash"
         )

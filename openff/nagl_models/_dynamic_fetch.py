@@ -4,7 +4,7 @@ import json
 import re
 import pathlib
 import urllib.request
-
+from openff.utilities.exceptions import OpenFFError
 import platformdirs
 from packaging.version import Version
 
@@ -20,6 +20,8 @@ KNOWN_HASHES = {
 
 CACHE_DIR = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
+class HashComparisonFailedException(OpenFFError):
+    """Exception raised when a NAGL file being loaded fails a comparison to a known or user-provided hash."""
 
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
@@ -56,6 +58,13 @@ def get_model(
 
 
     """
+
+    def assert_hash_equal(cached_path, expected_hash):
+        actual_hash = _get_sha256(cached_path)
+        if actual_hash != expected_hash:
+            raise HashComparisonFailedException(f"NAGL model file hash check failed. Expected hash is "
+                                                f"{expected_hash} but actual hash is {actual_hash}")
+
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     cached_path = CACHE_DIR / filename
@@ -66,7 +75,7 @@ def get_model(
 
     if cached_path.exists():
         if check_hash:
-            assert _get_sha256(cached_path) == check_hash
+            assert_hash_equal(cached_path, check_hash)
 
         return cached_path.as_posix()
 
@@ -91,9 +100,7 @@ def get_model(
                 assert path_to_file == cached_path.as_posix()
 
                 if check_hash:
-                    assert (
-                        _get_sha256(cached_path) == check_hash
-                    ), f"Hash mismatch for {filename}"
+                    assert_hash_equal(cached_path, check_hash)
 
                 return cached_path.as_posix()
 
@@ -112,9 +119,7 @@ def get_model(
         assert path_to_file == cached_path.as_posix()
 
         if check_hash:
-            actual_hash = _get_sha256(cached_path)
-            if actual_hash != file_hash:
-                raise HashComparisonFailedError(f"NAGL model file hash check failed. Expected hash is {file_hash} but computed hash is {actual_hash}")
+            assert_hash_equal(cached_path, check_hash)
 
         return cached_path.as_posix()
 
