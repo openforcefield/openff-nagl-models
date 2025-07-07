@@ -49,7 +49,7 @@ def get_model(
     This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
     there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
     immediately, even if a file with a matching name that WOULD satisfy the hash check exists in release
-    metadata or at a provided Zenodo DOI,
+    metadata or at a provided Zenodo DOI.
 
     Parameters
     ----------
