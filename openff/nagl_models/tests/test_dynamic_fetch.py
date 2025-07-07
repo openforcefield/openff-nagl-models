@@ -10,7 +10,11 @@ from pytest_socket import SocketBlockedError, disable_socket
 
 import openff.nagl_models._dynamic_fetch
 from openff.nagl_models import __file__ as root
-from openff.nagl_models._dynamic_fetch import get_model, HashComparisonFailedException
+from openff.nagl_models._dynamic_fetch import (
+    get_model,
+    HashComparisonFailedException,
+    UnableToParseDOIException,
+)
 
 
 def mocked_urlretrieve(url, filename):
@@ -166,16 +170,53 @@ def test_all_models_loadable(model, monkeypatch):
         GNNModel.load(get_model(model), eval_mode=True)
 
 
-def test_get_model_by_doi(hide_cache):
+def test_get_model_by_doi_and_hash(hide_cache):
     get_model(
         "my_favorite_model.pt",
         doi="10.5072/zenodo.278300",
         file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81",
+        _sandbox=True,
     )
+
+
+def test_get_model_by_doi_no_hash(hide_cache):
+    get_model("my_favorite_model.pt", doi="10.5072/zenodo.278300", _sandbox=True)
 
 
 def test_get_model_hash_comparison_fails():
     with pytest.raises(HashComparisonFailedException):
         get_model(
-            "my_favorite_model.pt", doi="10.5072/zenodo.278300", file_hash="wrong_hash"
+            "my_favorite_model.pt",
+            doi="10.5072/zenodo.278300",
+            file_hash="wrong_hash",
+            _sandbox=True,
+        )
+
+
+def test_user_provided_hash_conflicts_with_known_hash():
+    with pytest.raises(HashComparisonFailedException):
+        get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt", file_hash="wrong_hash")
+
+
+def test_malformed_doi(monkeypatch, hide_cache):
+    with monkeypatch.context() as m:
+        m.setattr(
+            urllib.request,
+            "urlretrieve",
+            mocked_urlretrieve,
+        )
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+
+        with pytest.raises(UnableToParseDOIException):
+            get_model("my_favorite_model.pt", doi="zenodo.278300", _sandbox=True)
+
+
+def test_no_matching_file_at_doi():
+    with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
+        get_model(
+            "file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300", _sandbox=True
         )

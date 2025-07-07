@@ -20,8 +20,14 @@ KNOWN_HASHES = {
 
 CACHE_DIR = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
+
 class HashComparisonFailedException(OpenFFError):
     """Exception raised when a NAGL file being loaded fails a comparison to a known or user-provided hash."""
+
+
+class UnableToParseDOIException(OpenFFError):
+    """Exception raised when a Zenodo DOI is unable to be parsed according to the expected pattern."""
+
 
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
@@ -29,10 +35,21 @@ def get_release_metadata() -> list[dict]:
 
 @functools.lru_cache()
 def get_model(
-    filename: str, doi: None | str = None, file_hash: None | str = None, _sandbox: bool = False
-) -> str:
+    filename: str,
+    doi: None | str = None,
+    file_hash: None | str = None,
+    _sandbox: bool = False,
+) -> pathlib.Path:
     """
-    Return the path of a model as cached on disk, downloading if necessary.
+    Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
+    1. Try to retrieve the file from the local cache
+    2. Try to fetch the file from a release of https://github.com/openforcefield/openff-nagl-models
+    3. Try to fetch the file from the DOI, if provided
+
+    This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
+    there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
+    immediately, even if a file with a matching name that WOULD satisfy the hash check exists in release
+    metadata or at a provided Zenodo DOI,
 
     Parameters
     ----------
@@ -46,24 +63,30 @@ def get_model(
     file_hash : typing.Optional[str], default=None
         The sha256 hash of the model file to verify the correct contents. Hash checks are automatically performed
         on some OpenFF-released NAGL models. But if the model isn't released by OpenFF and this argument is
-        not provided or has a value of `None`, then no hash check is performed. Raises HashComparisonFailedError if
-        unsuccessful.
+        not provided or has a value of `None`, then no hash check is performed. Raises HashComparisonFailedException
+        if unsuccessful. If a user provides a hash value here that disagrees with the known hash for the same file
+        name, the user-provided hash takes precedence.
     _sandbox : bool, default=False
         Whether to connect to sandbox.zenodo.com instead of zenodo.com. Used for testing.
 
     Returns
     -------
-    typing.Optional[pathlib.Path]
-        The path to the file if it was found, otherwise None.
+    pathlib.Path
+        The path to the file if it was found. If the file wasn't found then a FileNotFoundError is rasied.
 
-
+    Raises
+    ------
+    HashComparisonFailedException
+    FileNotFoundError
     """
 
     def assert_hash_equal(cached_path, expected_hash):
         actual_hash = _get_sha256(cached_path)
         if actual_hash != expected_hash:
-            raise HashComparisonFailedException(f"NAGL model file hash check failed. Expected hash is "
-                                                f"{expected_hash} but actual hash is {actual_hash}")
+            raise HashComparisonFailedException(
+                f"NAGL model file hash check failed. Expected hash is "
+                f"{expected_hash} but actual hash is {actual_hash}"
+            )
 
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
@@ -105,16 +128,27 @@ def get_model(
                 return cached_path.as_posix()
 
     if doi:
-        zenodo_id = re.findall("10.5072/zenodo.([0-9]+)", doi)[0]
+        try:
+            zenodo_id = re.findall("10.5072/zenodo.([0-9]+)", doi)[0]
+        except IndexError:
+            raise UnableToParseDOIException(
+                f"Unable to parse Zenodo DOI {doi}. DOI values are expected to look "
+                f"like '10.5072/zenodo.278300'"
+            )
 
-        # Remove "sandbox." to convert this to "real" zenodo before merge
-        # Or keep in with a testing flag?
-        file_url = (
-            f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
-        )
-        path_to_file, _ = urllib.request.urlretrieve(
-            file_url, filename=cached_path.as_posix()
-        )
+        if _sandbox:
+            file_url = (
+                f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
+            )
+        else:
+            file_url = f"https://zenodo.org/api/records/{zenodo_id}/files/{filename}"
+
+        try:
+            path_to_file, _ = urllib.request.urlretrieve(
+                file_url, filename=cached_path.as_posix()
+            )
+        except urllib.error.HTTPError:
+            raise FileNotFoundError(f"No file at {file_url}")
         assert cached_path.exists()
         assert path_to_file == cached_path.as_posix()
 
