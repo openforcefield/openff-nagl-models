@@ -2,6 +2,7 @@
 This module only contains the function that will be the entry point that
 will be used to find the model files.
 """
+
 import importlib.resources
 import os
 import pathlib
@@ -166,7 +167,8 @@ def list_available_nagl_models() -> list[pathlib.Path]:
     # look for all .pt files in the cache directory, but only those that are
     # expected to also be found in release assets
     cached_paths = [
-        cached_file for cached_file in CACHE_DIR.rglob("*.pt")
+        cached_file
+        for cached_file in CACHE_DIR.rglob("*.pt")
         if cached_file.name in KNOWN_HASHES
     ]
 
@@ -205,12 +207,12 @@ def get_models_by_type(
     --------
 
     Getting the latest pre-release model for am1bcc::
-    
+
         >>> from openff.nagl_models.openff_nagl_models import get_models_by_type
         >>> get_models_by_type(model_type="am1bcc")
         [PosixPath('/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'),
         PosixPath('/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
-    
+
     """
     from packaging.version import Version
 
@@ -221,14 +223,12 @@ def get_models_by_type(
             "If you are using a custom model, "
             "please manually specify the path to the model file."
         )
-    
+
     model_files = pathlib.Path(base_dir).glob("*.pt")
-    
+
     # assume everything follows the openff-gnn-<model_type>-<version>.pt format
     n_name = len(f"openff-gnn-{model_type}-")
-    versions_to_paths = {
-        Version(f.stem[n_name:]): f for f in model_files
-    }
+    versions_to_paths = {Version(f.stem[n_name:]): f for f in model_files}
     versions = sorted(versions_to_paths.keys())
     if production_only:
         versions = [v for v in versions if not v.is_prerelease]

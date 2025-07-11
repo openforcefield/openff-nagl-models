@@ -1,9 +1,9 @@
 import functools
 import hashlib
 import json
+import re
 import pathlib
 import urllib.request
-
 import platformdirs
 from packaging.version import Version
 
@@ -19,19 +19,73 @@ KNOWN_HASHES = {
 
 CACHE_DIR = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
+
+class HashComparisonFailedException(Exception):
+    """Exception raised when a NAGL file being loaded fails a comparison to a known or user-provided hash."""
+
+
+class UnableToParseDOIException(Exception):
+    """Exception raised when a Zenodo DOI is unable to be parsed according to the expected pattern."""
+
+
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
 
 
 @functools.lru_cache()
-def get_model(filename: str) -> str:
-    """Return the path of a model as cached on disk, downloading if necessary."""
+def get_model(
+    filename: str,
+    doi: None | str = None,
+    file_hash: None | str = None,
+) -> str:
+    """
+    Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
+    1. Try to retrieve the file from the local cache
+    2. Try to fetch the file from a release of https://github.com/openforcefield/openff-nagl-models
+    3. Try to fetch the file from the DOI, if provided
+
+    This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
+    there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
+    immediately, even if a file with a matching name that WOULD satisfy the hash check exists in release
+    metadata or at a provided Zenodo DOI.
+
+    Parameters
+    ----------
+    filename
+        The name of the file to search for.
+    doi
+        The Zenodo DOI to use as a backup location for fetching the model file if it's not found in the local cache
+        or in the
+        [release metadata of an openff-nagl-models release](https://github.com/openforcefield/openff-nagl-models/releases)
+        on GitHub. For example: "10.5072/zenodo.278300"
+    file_hash
+        The sha256 hash of the model file to verify the correct contents. Hash checks are automatically performed
+        on some OpenFF-released NAGL models. But if the model isn't released by OpenFF and this argument is
+        not provided or has a value of `None`, then no hash check is performed. Raises HashComparisonFailedException
+        if unsuccessful. If a user provides a hash value here that disagrees with the known hash for the same file
+        name, the user-provided hash takes precedence.
+
+    Returns
+    -------
+    str
+        The path to the file if it was found. If the file wasn't found then a FileNotFoundError is rasied.
+
+    Raises
+    ------
+    HashComparisonFailedException
+    FileNotFoundError
+    """
+
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     cached_path = CACHE_DIR / filename
 
+    if file_hash is None and filename in KNOWN_HASHES:
+        file_hash = KNOWN_HASHES[filename]
+
     if cached_path.exists():
-        assert _get_sha256(cached_path) == KNOWN_HASHES[filename]
+        if file_hash:
+            assert_hash_equal(cached_path, file_hash)
 
         return cached_path.as_posix()
 
@@ -47,23 +101,61 @@ def get_model(filename: str) -> str:
         release = releases[version]
         for file in release["assets"]:
             if file["name"] == filename:
-                path_to_file, _ = urllib.request.urlretrieve(
-                    url=file["browser_download_url"],
-                    filename=cached_path.as_posix(),
+                return _download_and_verify_file(
+                    file["browser_download_url"], cached_path, file_hash
                 )
 
-                assert cached_path.exists()
-                assert path_to_file == cached_path.as_posix()
+    if doi:
+        try:
+            match = re.search(r"10\.(5072|5281)/zenodo\.([0-9]+)", doi)
+            if not match:
+                raise IndexError
+            prefix, zenodo_id = match.groups()
+        except (IndexError, AttributeError):
+            raise UnableToParseDOIException(
+                f"Unable to parse Zenodo DOI {doi}. DOI values are expected to look "
+                f"like '10.5281/zenodo.278300' (production) or '10.5072/zenodo.278300' (sandbox)"
+            )
 
-                assert _get_sha256(cached_path) == KNOWN_HASHES[filename], (
-                    f"Hash mismatch for {filename}"
-                )
+        if prefix == "5072":
+            file_url = (
+                f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
+            )
+        else:
+            file_url = f"https://zenodo.org/api/records/{zenodo_id}/files/{filename}"
 
-                return cached_path.as_posix()
+        try:
+            return _download_and_verify_file(file_url, cached_path, file_hash)
+        except urllib.error.HTTPError:
+            raise FileNotFoundError(f"No file at {file_url}")
 
     raise FileNotFoundError(
         f"Could not find asset with name '{filename}' in any release"
     )
+
+
+def assert_hash_equal(cached_path, expected_hash):
+    actual_hash = _get_sha256(cached_path)
+    if actual_hash != expected_hash:
+        raise HashComparisonFailedException(
+            f"NAGL model file hash check failed. Expected hash is "
+            f"{expected_hash} but actual hash is {actual_hash}"
+        )
+
+
+def _download_and_verify_file(
+    url: str, cached_path: pathlib.Path, file_hash: None | str = None
+) -> str:
+    """Download a file from URL to cached_path and optionally verify its hash."""
+    path_to_file, _ = urllib.request.urlretrieve(url, filename=cached_path.as_posix())
+
+    assert cached_path.exists()
+    assert path_to_file == cached_path.as_posix()
+
+    if file_hash:
+        assert_hash_equal(cached_path, file_hash)
+
+    return cached_path.as_posix()
 
 
 def _get_sha256(filename: str) -> str:

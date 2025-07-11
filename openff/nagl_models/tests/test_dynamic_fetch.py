@@ -1,4 +1,5 @@
 import json
+import os
 import pathlib
 import shutil
 import urllib.request
@@ -9,7 +10,11 @@ from pytest_socket import SocketBlockedError, disable_socket
 
 import openff.nagl_models._dynamic_fetch
 from openff.nagl_models import __file__ as root
-from openff.nagl_models._dynamic_fetch import get_model
+from openff.nagl_models._dynamic_fetch import (
+    get_model,
+    HashComparisonFailedException,
+    UnableToParseDOIException,
+)
 
 
 def mocked_urlretrieve(url, filename):
@@ -59,11 +64,27 @@ def test_get_known_models(monkeypatch, known_model):
         assert "OPENFF_NAGL_MODELS" in get_model(known_model)
 
 
-def test_access_internet_with_empty_cache():
-    cache_path = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
+@pytest.fixture
+def hide_cache():
+    cache_dir = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
+    alt_dir = str(cache_dir) + "_temp"
 
-    if cache_path.exists():
-        shutil.rmtree(cache_path)
+    if os.path.exists(alt_dir):
+        raise FileExistsError(f"Temporary directory already exists: {alt_dir}")
+
+    if os.path.exists(cache_dir):
+        shutil.move(cache_dir, alt_dir)
+
+    yield
+
+    if os.path.exists(alt_dir):
+        if os.path.exists(cache_dir):
+            shutil.rmtree(cache_dir)
+        shutil.move(alt_dir, cache_dir)
+
+
+def test_access_internet_with_empty_cache(hide_cache):
+    cache_path = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
     disable_socket()
 
@@ -147,3 +168,53 @@ def test_all_models_loadable(model, monkeypatch):
         )
 
         GNNModel.load(get_model(model), eval_mode=True)
+
+
+def test_get_model_by_doi_and_hash(hide_cache):
+    # This test uses a Zenodo sandbox DOI (10.5072 prefix) and the corresponding
+    # SHA256 hash of the test file uploaded to that sandbox record
+    get_model(
+        "my_favorite_model.pt",
+        doi="10.5072/zenodo.278300",
+        file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81",
+    )
+
+
+def test_get_model_by_doi_no_hash(hide_cache):
+    get_model("my_favorite_model.pt", doi="10.5072/zenodo.278300")
+
+
+def test_get_model_hash_comparison_fails():
+    with pytest.raises(HashComparisonFailedException):
+        get_model(
+            "my_favorite_model.pt",
+            doi="10.5072/zenodo.278300",
+            file_hash="wrong_hash",
+        )
+
+
+def test_user_provided_hash_conflicts_with_known_hash():
+    with pytest.raises(HashComparisonFailedException):
+        get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt", file_hash="wrong_hash")
+
+
+def test_malformed_doi(monkeypatch, hide_cache):
+    with monkeypatch.context() as m:
+        m.setattr(
+            urllib.request,
+            "urlretrieve",
+            mocked_urlretrieve,
+        )
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+
+        with pytest.raises(UnableToParseDOIException):
+            get_model("my_favorite_model.pt", doi="zenodo.278300")
+
+
+def test_no_matching_file_at_doi():
+    with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
+        get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")
