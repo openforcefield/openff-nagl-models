@@ -38,7 +38,7 @@ def get_model(
     doi: None | str = None,
     file_hash: None | str = None,
     _sandbox: bool = False,
-) -> pathlib.Path:
+) -> str:
     """
     Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
     1. Try to retrieve the file from the local cache
