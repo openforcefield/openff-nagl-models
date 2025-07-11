@@ -76,13 +76,6 @@ def get_model(
     FileNotFoundError
     """
 
-    def assert_hash_equal(cached_path, expected_hash):
-        actual_hash = _get_sha256(cached_path)
-        if actual_hash != expected_hash:
-            raise HashComparisonFailedException(
-                f"NAGL model file hash check failed. Expected hash is "
-                f"{expected_hash} but actual hash is {actual_hash}"
-            )
 
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
@@ -109,18 +102,9 @@ def get_model(
         release = releases[version]
         for file in release["assets"]:
             if file["name"] == filename:
-                path_to_file, _ = urllib.request.urlretrieve(
-                    url=file["browser_download_url"],
-                    filename=cached_path.as_posix(),
+                return _download_and_verify_file(
+                    file["browser_download_url"], cached_path, file_hash
                 )
-
-                assert cached_path.exists()
-                assert path_to_file == cached_path.as_posix()
-
-                if file_hash:
-                    assert_hash_equal(cached_path, file_hash)
-
-                return cached_path.as_posix()
 
     if doi:
         try:
@@ -142,22 +126,36 @@ def get_model(
             file_url = f"https://zenodo.org/api/records/{zenodo_id}/files/{filename}"
 
         try:
-            path_to_file, _ = urllib.request.urlretrieve(
-                file_url, filename=cached_path.as_posix()
-            )
+            return _download_and_verify_file(file_url, cached_path, file_hash)
         except urllib.error.HTTPError:
             raise FileNotFoundError(f"No file at {file_url}")
-        assert cached_path.exists()
-        assert path_to_file == cached_path.as_posix()
-
-        if file_hash:
-            assert_hash_equal(cached_path, file_hash)
-
-        return cached_path.as_posix()
 
     raise FileNotFoundError(
         f"Could not find asset with name '{filename}' in any release"
     )
+
+
+def assert_hash_equal(cached_path, expected_hash):
+    actual_hash = _get_sha256(cached_path)
+    if actual_hash != expected_hash:
+        raise HashComparisonFailedException(
+            f"NAGL model file hash check failed. Expected hash is "
+            f"{expected_hash} but actual hash is {actual_hash}"
+        )
+
+def _download_and_verify_file(url: str, cached_path: pathlib.Path, file_hash: None | str = None) -> str:
+    """Download a file from URL to cached_path and optionally verify its hash."""
+    path_to_file, _ = urllib.request.urlretrieve(
+        url, filename=cached_path.as_posix()
+    )
+
+    assert cached_path.exists()
+    assert path_to_file == cached_path.as_posix()
+
+    if file_hash:
+        assert_hash_equal(cached_path, file_hash)
+
+    return cached_path.as_posix()
 
 
 def _get_sha256(filename: str) -> str:
