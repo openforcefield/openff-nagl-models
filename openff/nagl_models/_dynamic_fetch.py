@@ -52,25 +52,25 @@ def get_model(
 
     Parameters
     ----------
-    filename : str
+    filename
         The name of the file to search for.
-    doi : typing.Optional[str], default=None
+    doi
         The Zenodo DOI to use as a backup location for fetching the model file if it's not found in the local cache
         or in the
         [release metadata of an openff-nagl-models release](https://github.com/openforcefield/openff-nagl-models/releases)
         on GitHub. For example: "10.5072/zenodo.278300"
-    file_hash : typing.Optional[str], default=None
+    file_hash
         The sha256 hash of the model file to verify the correct contents. Hash checks are automatically performed
         on some OpenFF-released NAGL models. But if the model isn't released by OpenFF and this argument is
         not provided or has a value of `None`, then no hash check is performed. Raises HashComparisonFailedException
         if unsuccessful. If a user provides a hash value here that disagrees with the known hash for the same file
         name, the user-provided hash takes precedence.
-    _sandbox : bool, default=False
+    _sandbox
         Whether to connect to sandbox.zenodo.com instead of zenodo.com. Used for testing.
 
     Returns
     -------
-    pathlib.Path
+    str
         The path to the file if it was found. If the file wasn't found then a FileNotFoundError is rasied.
 
     Raises
