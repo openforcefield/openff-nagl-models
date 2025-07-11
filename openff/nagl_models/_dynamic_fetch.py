@@ -91,13 +91,12 @@ def get_model(
 
     cached_path = CACHE_DIR / filename
 
-    check_hash = file_hash
-    if check_hash is None and filename in KNOWN_HASHES:
-        check_hash = KNOWN_HASHES[filename]
+    if file_hash is None and filename in KNOWN_HASHES:
+        file_hash = KNOWN_HASHES[filename]
 
     if cached_path.exists():
-        if check_hash:
-            assert_hash_equal(cached_path, check_hash)
+        if file_hash:
+            assert_hash_equal(cached_path, file_hash)
 
         return cached_path.as_posix()
 
@@ -121,8 +120,8 @@ def get_model(
                 assert cached_path.exists()
                 assert path_to_file == cached_path.as_posix()
 
-                if check_hash:
-                    assert_hash_equal(cached_path, check_hash)
+                if file_hash:
+                    assert_hash_equal(cached_path, file_hash)
 
                 return cached_path.as_posix()
 
@@ -151,8 +150,8 @@ def get_model(
         assert cached_path.exists()
         assert path_to_file == cached_path.as_posix()
 
-        if check_hash:
-            assert_hash_equal(cached_path, check_hash)
+        if file_hash:
+            assert_hash_equal(cached_path, file_hash)
 
         return cached_path.as_posix()
 
