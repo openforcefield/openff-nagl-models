@@ -217,6 +217,4 @@ def test_malformed_doi(monkeypatch, hide_cache):
 
 def test_no_matching_file_at_doi():
     with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
-        get_model(
-            "file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300"
-        )
+        get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")

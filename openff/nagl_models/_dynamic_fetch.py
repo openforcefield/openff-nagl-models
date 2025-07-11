@@ -76,7 +76,6 @@ def get_model(
     FileNotFoundError
     """
 
-
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     cached_path = CACHE_DIR / filename
@@ -143,11 +142,12 @@ def assert_hash_equal(cached_path, expected_hash):
             f"{expected_hash} but actual hash is {actual_hash}"
         )
 
-def _download_and_verify_file(url: str, cached_path: pathlib.Path, file_hash: None | str = None) -> str:
+
+def _download_and_verify_file(
+    url: str, cached_path: pathlib.Path, file_hash: None | str = None
+) -> str:
     """Download a file from URL to cached_path and optionally verify its hash."""
-    path_to_file, _ = urllib.request.urlretrieve(
-        url, filename=cached_path.as_posix()
-    )
+    path_to_file, _ = urllib.request.urlretrieve(url, filename=cached_path.as_posix())
 
     assert cached_path.exists()
     assert path_to_file == cached_path.as_posix()
