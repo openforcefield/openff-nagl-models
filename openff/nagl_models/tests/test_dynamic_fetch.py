@@ -171,6 +171,8 @@ def test_all_models_loadable(model, monkeypatch):
 
 
 def test_get_model_by_doi_and_hash(hide_cache):
+    # This test uses a Zenodo sandbox DOI (10.5072 prefix) and the corresponding
+    # SHA256 hash of the test file uploaded to that sandbox record
     get_model(
         "my_favorite_model.pt",
         doi="10.5072/zenodo.278300",
