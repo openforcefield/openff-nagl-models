@@ -37,7 +37,6 @@ def get_model(
     filename: str,
     doi: None | str = None,
     file_hash: None | str = None,
-    _sandbox: bool = False,
 ) -> str:
     """
     Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
@@ -65,8 +64,6 @@ def get_model(
         not provided or has a value of `None`, then no hash check is performed. Raises HashComparisonFailedException
         if unsuccessful. If a user provides a hash value here that disagrees with the known hash for the same file
         name, the user-provided hash takes precedence.
-    _sandbox
-        Whether to connect to sandbox.zenodo.com instead of zenodo.com. Used for testing.
 
     Returns
     -------
@@ -127,14 +124,17 @@ def get_model(
 
     if doi:
         try:
-            zenodo_id = re.findall("10.5072/zenodo.([0-9]+)", doi)[0]
-        except IndexError:
+            match = re.search(r"10\.(5072|5281)/zenodo\.([0-9]+)", doi)
+            if not match:
+                raise IndexError
+            prefix, zenodo_id = match.groups()
+        except (IndexError, AttributeError):
             raise UnableToParseDOIException(
                 f"Unable to parse Zenodo DOI {doi}. DOI values are expected to look "
-                f"like '10.5072/zenodo.278300'"
+                f"like '10.5281/zenodo.278300' (production) or '10.5072/zenodo.278300' (sandbox)"
             )
 
-        if _sandbox:
+        if prefix == "5072":
             file_url = (
                 f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
             )

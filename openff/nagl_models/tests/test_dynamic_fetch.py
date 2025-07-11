@@ -175,12 +175,11 @@ def test_get_model_by_doi_and_hash(hide_cache):
         "my_favorite_model.pt",
         doi="10.5072/zenodo.278300",
         file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81",
-        _sandbox=True,
     )
 
 
 def test_get_model_by_doi_no_hash(hide_cache):
-    get_model("my_favorite_model.pt", doi="10.5072/zenodo.278300", _sandbox=True)
+    get_model("my_favorite_model.pt", doi="10.5072/zenodo.278300")
 
 
 def test_get_model_hash_comparison_fails():
@@ -189,7 +188,6 @@ def test_get_model_hash_comparison_fails():
             "my_favorite_model.pt",
             doi="10.5072/zenodo.278300",
             file_hash="wrong_hash",
-            _sandbox=True,
         )
 
 
@@ -212,11 +210,11 @@ def test_malformed_doi(monkeypatch, hide_cache):
         )
 
         with pytest.raises(UnableToParseDOIException):
-            get_model("my_favorite_model.pt", doi="zenodo.278300", _sandbox=True)
+            get_model("my_favorite_model.pt", doi="zenodo.278300")
 
 
 def test_no_matching_file_at_doi():
     with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
         get_model(
-            "file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300", _sandbox=True
+            "file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300"
         )
