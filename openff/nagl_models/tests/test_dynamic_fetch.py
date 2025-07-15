@@ -170,32 +170,57 @@ def test_all_models_loadable(model, monkeypatch):
         GNNModel.load(get_model(model), eval_mode=True)
 
 
-def test_get_model_by_doi_and_hash(hide_cache):
+def test_get_model_by_doi_and_hash(hide_cache, monkeypatch):
     # This test uses a Zenodo sandbox DOI (10.5072 prefix) and the corresponding
     # SHA256 hash of the test file uploaded to that sandbox record
-    get_model(
-        "my_favorite_model.pt",
-        doi="10.5072/zenodo.278300",
-        file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81",
-    )
+    with monkeypatch.context() as m:
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
 
-
-def test_get_model_by_doi_no_hash(hide_cache):
-    get_model("my_favorite_model.pt", doi="10.5072/zenodo.278300")
-
-
-def test_get_model_hash_comparison_fails():
-    with pytest.raises(HashComparisonFailedException):
         get_model(
             "my_favorite_model.pt",
             doi="10.5072/zenodo.278300",
-            file_hash="wrong_hash",
+            file_hash="127eb0b9512f22546f8b455582bcd85b2521866d32b86d231fee26d4771b1d81",
         )
 
+def test_get_model_by_doi_no_hash(hide_cache, monkeypatch):
+    with monkeypatch.context() as m:
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
 
-def test_user_provided_hash_conflicts_with_known_hash():
-    with pytest.raises(HashComparisonFailedException):
-        get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt", file_hash="wrong_hash")
+        get_model("my_favorite_model.pt", doi="10.5072/zenodo.278300")
+
+
+def test_get_model_hash_comparison_fails(monkeypatch):
+    with monkeypatch.context() as m:
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+
+        with pytest.raises(HashComparisonFailedException):
+            get_model(
+                "my_favorite_model.pt",
+                doi="10.5072/zenodo.278300",
+                file_hash="wrong_hash",
+            )
+
+def test_user_provided_hash_conflicts_with_known_hash(monkeypatch):
+    with monkeypatch.context() as m:
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+        with pytest.raises(HashComparisonFailedException):
+            get_model("openff-gnn-am1bcc-0.1.0-rc.3.pt", file_hash="wrong_hash")
 
 
 def test_malformed_doi(monkeypatch, hide_cache):
@@ -215,6 +240,12 @@ def test_malformed_doi(monkeypatch, hide_cache):
             get_model("my_favorite_model.pt", doi="zenodo.278300")
 
 
-def test_no_matching_file_at_doi():
-    with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
-        get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")
+def test_no_matching_file_at_doi(monkeypatch):
+    with monkeypatch.context() as m:
+        m.setattr(
+            openff.nagl_models._dynamic_fetch,
+            "get_release_metadata",
+            mocked_get_release_metadata,
+        )
+        with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
+            get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")
