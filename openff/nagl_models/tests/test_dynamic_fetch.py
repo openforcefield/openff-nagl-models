@@ -6,7 +6,6 @@ import urllib.request
 
 import platformdirs
 import pytest
-from pytest_socket import SocketBlockedError, disable_socket
 
 import openff.nagl_models._dynamic_fetch
 from openff.nagl_models import __file__ as root
@@ -84,6 +83,8 @@ def hide_cache():
 
 
 def test_access_internet_with_empty_cache(hide_cache):
+    from pytest_socket import SocketBlockedError, disable_socket
+
     cache_path = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
 
     disable_socket()
@@ -99,6 +100,8 @@ def test_access_internet_with_empty_cache(hide_cache):
 
 
 def test_file_exists_in_cache_without_internet(monkeypatch):
+    from pytest_socket import disable_socket
+
     # since tests can run in different orders, make sure the file exists already
     with monkeypatch.context() as m:
         m.setattr(
