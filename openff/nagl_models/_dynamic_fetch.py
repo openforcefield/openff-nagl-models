@@ -27,6 +27,11 @@ class HashComparisonFailedException(Exception):
 class UnableToParseDOIException(Exception):
     """Exception raised when a Zenodo DOI is unable to be parsed according to the expected pattern."""
 
+class BadFileSuffixError(Exception):
+    """Exception raised when a model file with an incorrect suffix is requested (this will happen a
+    lot with the current working of the ToolkitRegistry.call method, where things like "am1bcc" will
+    be requested from get_model due to toolkit precedence."""
+
 
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
@@ -75,7 +80,9 @@ def get_model(
     HashComparisonFailedException
     FileNotFoundError
     """
-
+    if not(filename.endswith(".pt")):
+        raise BadFileSuffixError(f"NAGLToolkitWrapper does not recognize file path extension "
+                                 f"on {filename=}, expected '.pt' suffix")
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     cached_path = CACHE_DIR / filename
