@@ -6,7 +6,7 @@ import pathlib
 import urllib.request
 import platformdirs
 from packaging.version import Version
-
+from openff.nagl_models import validate_nagl_model_path
 
 RELEASES_URL = "https://api.github.com/repos/openforcefield/openff-nagl-models/releases"
 
@@ -45,9 +45,10 @@ def get_model(
 ) -> str:
     """
     Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
-    1. Try to retrieve the file from the local cache
-    2. Try to fetch the file from a release of https://github.com/openforcefield/openff-nagl-models
-    3. Try to fetch the file from the DOI, if provided
+    1. Try to retrieve the file from the openff-nagl-models python package
+    2. Try to retrieve the file from the local cache
+    3. Try to fetch the file from a release of https://github.com/openforcefield/openff-nagl-models
+    4. Try to fetch the file from the DOI, if provided
 
     This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
     there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
@@ -85,11 +86,20 @@ def get_model(
                                  f"on {filename=}, expected '.pt' suffix")
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
-    cached_path = CACHE_DIR / filename
-
+    # See if the file has a known hash
     if file_hash is None and filename in KNOWN_HASHES:
         file_hash = KNOWN_HASHES[filename]
 
+    # See if it's available in the openff-nagl-models python package
+    try:
+        file_path = validate_nagl_model_path(filename)
+        assert_hash_equal(file_path, file_hash)
+        return file_path
+    except FileNotFoundError:
+        pass
+
+    # Then check if it's in the cache
+    cached_path = CACHE_DIR / filename
     if cached_path.exists():
         if file_hash:
             assert_hash_equal(cached_path, file_hash)
@@ -112,6 +122,7 @@ def get_model(
     #                 file["browser_download_url"], cached_path, file_hash
     #             )
 
+    # Otherwise try to fetch from DOI
     if doi:
         try:
             match = re.search(r"10\.(5072|5281)/zenodo\.([0-9]+)", doi)
