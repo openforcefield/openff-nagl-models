@@ -1,6 +1,6 @@
 # AM1-BCC GNN v0.1.0-rc1
 
-**Name:** `"openff-gnn-am1bcc-0.1.0-rc.1.pt"`
+**Charge method name:** `"openff-gnn-am1bcc-0.1.0-rc.1.pt"`
 
 This model is trained to produce AM1-BCC charges similar to OpenEye's implementation.
 
