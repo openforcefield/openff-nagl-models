@@ -1,5 +1,7 @@
 # AM1-BCC GNN v0.1.0-rc3
 
+**Charge method name:** `"openff-gnn-am1bcc-0.1.0-rc.3.pt"`
+
 This model is trained to produce AM1-BCC charges similar to OpenEye's implementation.
 The neural network model is identical to the the previously released
 [GNN v0.1.0-rc2 model](https://openff-nagl-models.readthedocs.io/en/latest/models/openff-gnn-am1bcc-0.1.0-rc2/index.html).
@@ -61,6 +63,8 @@ The model was trained to three targets:
 | Charge RMSE | 1      | 0.02        |
 | Dipole RMSE | 1      | 0.1         |
 | Weighted ESP RMSE    | 1      | 0.001       |
+
+
 
 
 ## Domain
