@@ -104,22 +104,6 @@ def get_model(
 
         return cached_path.as_posix()
 
-    # release_metadata = get_release_metadata()
-    #
-    # # tags with "v" prefix can't easily be sorted, but the result of passing through Version
-    # # are not necessarily 1:1 with the metadata in the releases, keep both and map between
-    # releases: dict[Version:str] = {
-    #     Version(release["tag_name"]): release for release in release_metadata
-    # }
-    #
-    # for version in reversed(sorted(releases)):
-    #     release = releases[version]
-    #     for file in release["assets"]:
-    #         if file["name"] == filename:
-    #             return _download_and_verify_file(
-    #                 file["browser_download_url"], cached_path, file_hash
-    #             )
-
     # Otherwise try to fetch from DOI
     if doi:
         try:
