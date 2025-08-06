@@ -47,8 +47,7 @@ def get_model(
     Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
     1. Try to retrieve the file from the openff-nagl-models python package
     2. Try to retrieve the file from the local cache
-    3. Try to fetch the file from a release of https://github.com/openforcefield/openff-nagl-models
-    4. Try to fetch the file from the DOI, if provided
+    3. Try to fetch the file from the DOI, if provided
 
     This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
     there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
@@ -74,7 +73,7 @@ def get_model(
     Returns
     -------
     str
-        The path to the file if it was found. If the file wasn't found then a FileNotFoundError is rasied.
+        The path to the file if it was found. If the file wasn't found then a FileNotFoundError is raised.
 
     Raises
     ------
