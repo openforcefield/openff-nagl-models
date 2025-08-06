@@ -37,7 +37,6 @@ def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
 
 
-@functools.lru_cache()
 def get_model(
     filename: str,
     doi: None | str = None,
