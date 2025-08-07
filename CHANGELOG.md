@@ -14,6 +14,19 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
+## Current development
+
+### Authors
+<!-- GitHub usernames of contributors to this release -->
+- @lilyminium
+- @Yoshanuikabundi
+- @mattwthompson
+- @j-wags
+- @jaclark5 (assisted with debugging caching issues)
+
+### New features
+- Added fetching by DOI, hash verification, and caching. (#44, #61, #62)
+
 ## v0.3.0 - 2024-07-29
 
 ### Authors
