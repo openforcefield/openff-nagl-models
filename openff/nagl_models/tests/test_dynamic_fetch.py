@@ -45,6 +45,8 @@ def test_zenodo_fetching_and_caching(hide_cache):
     # openff-gnn-am1bcc-0.1.0-rc.3.pt) uploaded to that sandbox record
 
     from pytest_socket import SocketBlockedError, disable_socket, enable_socket
+    from openff.nagl_models._dynamic_fetch import CACHE_DIR
+    from openff.nagl_models import get_nagl_model_dirs_paths
 
     disable_socket()
 
@@ -54,6 +56,11 @@ def test_zenodo_fetching_and_caching(hide_cache):
         get_model(
             "my_favorite_model.pt",
         )
+
+    # Ensure the test file isn't in the cache or the nagl_models package
+    assert not (os.path.exists(CACHE_DIR / 'my_favorite_model.pt'))
+    for dir_path in get_nagl_model_dirs_paths():
+        assert not (os.path.exists(dir_path / 'my_favorite_model.pt'))
 
     # Ensure that trying to fetch a
     # model fails due to lack of internet access
@@ -73,6 +80,8 @@ def test_zenodo_fetching_and_caching(hide_cache):
         doi="10.5072/zenodo.278300",
     )
 
+    # Ensure that the file is really in the cache
+    assert os.path.exists(CACHE_DIR / 'my_favorite_model.pt')
     # Ensure that, once fetched, the file can be gotten without accessing the internet.
     disable_socket()
     # Ensure that cached files can be accessed when no optional arguments are provided
