@@ -116,9 +116,6 @@ def test_zenodo_fetching_and_caching(hide_cache):
             file_hash="wrong_hash",
         )
 
-
-
-#
 def test_error_on_missing_file():
     with pytest.raises(
             FileNotFoundError,
@@ -128,7 +125,7 @@ def test_error_on_missing_file():
 def test_error_on_bad_file_suffix():
     with pytest.raises(
             BadFileSuffixError,
-            match="NAGLToolkitWrapper does not recognize file path extension"):
+            match="Found an unrecognized file path extension on filename='FOOBAR.txt'"):
 
         get_model("FOOBAR.txt")
 
