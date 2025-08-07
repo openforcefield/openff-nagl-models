@@ -13,19 +13,6 @@ from openff.nagl_models._dynamic_fetch import (
     BadFileSuffixError,
 )
 
-
-def mocked_urlretrieve(url, filename):
-    """Mock downloading files from assets by copying from the models/ directory."""
-    old = (
-        pathlib.Path(root).parent / "models/am1bcc" / pathlib.Path(filename).name
-    ).as_posix()
-    new = (platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS" / filename).as_posix()
-
-    shutil.copy(old, new)
-
-    return new, None
-
-
 @pytest.fixture
 def hide_cache():
     cache_dir = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
