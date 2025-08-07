@@ -10,7 +10,7 @@ from .openff_nagl_models import (
     load_nagl_model_directory_entry_points,
     validate_nagl_model_path,
     list_available_nagl_models,
-    get_models_by_type
+    get_models_by_type,
 )
 from openff.nagl_models._dynamic_fetch import get_model
 
