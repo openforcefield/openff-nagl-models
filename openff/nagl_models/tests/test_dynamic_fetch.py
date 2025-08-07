@@ -93,7 +93,7 @@ def test_zenodo_fetching_and_caching(hide_cache):
         "my_favorite_model.pt",
     )
 
-    # Ensure that cached files can be accessed when only doi is provided
+    # Ensure that a network call is not made if the requested file is in the cache
     get_model(
         "my_favorite_model.pt",
         doi="10.5072/zenodo.278300",

@@ -44,9 +44,9 @@ def get_model(
 ) -> str:
     """
     Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
-    1. Try to retrieve the file from the openff-nagl-models python package
+    1. Try to retrieve the file from the installed `openff-nagl-models` python package on disk
     2. Try to retrieve the file from the local cache
-    3. Try to fetch the file from the DOI, if provided
+    3. Try to fetch the file from the Zenodo DOI, if provided
 
     This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
     there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
@@ -80,8 +80,8 @@ def get_model(
     FileNotFoundError
     """
     if not(filename.endswith(".pt")):
-        raise BadFileSuffixError(f"NAGLToolkitWrapper does not recognize file path extension "
-                                 f"on {filename=}, expected '.pt' suffix")
+        raise BadFileSuffixError(f"OpenFF NAGL models are based on PyTorch files and expect a `.pt` suffix. Found an unrecognized file path extension "
+                                 f"on {filename=}")
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     # See if the file has a known hash
