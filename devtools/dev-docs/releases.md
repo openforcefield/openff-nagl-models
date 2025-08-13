@@ -51,6 +51,16 @@ Include release notes at your discretion.
 
 Do this via the web UI.
 
+## Make the pip package and upload to pypi
+
+```
+python -m pip install pipx twine
+git checkout v0.4.0
+python -m pipx run build --wheel --sdist
+python3 -m twine upload --repository pypi dist/openff_nagl_models-0.4.0*
+```
+
 ## Make the `conda-forge` packages
 
-
+Eg. [this pr](https://github.com/conda-forge/openff-nagl-models-feedstock/pull/14)
+You can generate the new hash using the `dist/` folder from the last step, eg `openssl sha256 dist/openff_nagl_models-0.4.0.tar.gz`
