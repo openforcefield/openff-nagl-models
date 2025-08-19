@@ -93,7 +93,7 @@ def get_model(
     try:
         file_path = validate_nagl_model_path(filename)
         # If filename happens to be an absolute path (not guaranteed this is in scope, but is temporarily supported,
-        # see https://github.com/openforcefield/openff-toolkit/issues/2095) the hash check will be skipped.
+        # see https://github.com/openforcefield/openff-nagl-models/issues/68) the hash check will be skipped.
         # This isn't a final decision on any behaviors, just a temporary workaround.
         if file_hash is not None:
             assert_hash_equal(file_path, file_hash)
