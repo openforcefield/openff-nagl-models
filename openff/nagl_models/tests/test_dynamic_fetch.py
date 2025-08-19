@@ -169,4 +169,4 @@ def test_no_matching_file_at_doi():
 @pytest.mark.parametrize('list_method_output', list_available_nagl_models() + get_models_by_type('am1bcc'))
 @pytest.mark.parametrize('get_method', [get_model, validate_nagl_model_path])
 def test_output_of_list_models_is_input_to_model_use(list_method_output, get_method):
-    get_method(list_outputs)
+    get_method(list_method_output)
