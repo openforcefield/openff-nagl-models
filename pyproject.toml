@@ -37,6 +37,23 @@ Documentation = "https://openff-nagl-models.readthedocs.io"
 
 [tool.versioningit]
 
+[tool.mypy]
+mypy_path = "stubs/"
+python_version = "3.11"
+plugins = "numpy.typing.mypy_plugin,pydantic.mypy"
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_incomplete_stub = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "openff.toolkit",
+    "openff.nagl.*",
+    "pytest_socket",
+]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = [
