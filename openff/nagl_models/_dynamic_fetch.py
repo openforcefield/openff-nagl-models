@@ -79,7 +79,8 @@ def get_model(
     HashComparisonFailedException
     FileNotFoundError
     """
-    if not(filename.endswith(".pt")):
+    # Cast to str to temporarily preserve old behavior, see https://github.com/openforcefield/openff-toolkit/issues/2095
+    if not(str(filename).endswith(".pt")):
         raise BadFileSuffixError(f"OpenFF NAGL models are based on PyTorch files and expect a `.pt` suffix. Found an unrecognized file path extension "
                                  f"on {filename=}")
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
@@ -91,7 +92,11 @@ def get_model(
     # See if it's available in the openff-nagl-models python package
     try:
         file_path = validate_nagl_model_path(filename)
-        assert_hash_equal(file_path, file_hash)
+        # If filename happens to be an absolute path (not guaranteed this is in scope, but is temporarily supported,
+        # see https://github.com/openforcefield/openff-nagl-models/issues/68) the hash check will be skipped.
+        # This isn't a final decision on any behaviors, just a temporary workaround.
+        if file_hash is not None:
+            assert_hash_equal(file_path, file_hash)
         return file_path
     except FileNotFoundError:
         pass
