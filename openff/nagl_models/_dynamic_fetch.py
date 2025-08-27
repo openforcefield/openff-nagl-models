@@ -1,11 +1,11 @@
-import functools
 import hashlib
 import json
-import re
 import pathlib
+import re
 import urllib.request
+
 import platformdirs
-from packaging.version import Version
+
 from openff.nagl_models import validate_nagl_model_path
 
 RELEASES_URL = "https://api.github.com/repos/openforcefield/openff-nagl-models/releases"
@@ -26,6 +26,7 @@ class HashComparisonFailedException(Exception):
 
 class UnableToParseDOIException(Exception):
     """Exception raised when a Zenodo DOI is unable to be parsed according to the expected pattern."""
+
 
 class BadFileSuffixError(Exception):
     """Exception raised when a model file with an incorrect suffix is requested (this will happen a
@@ -80,9 +81,11 @@ def get_model(
     FileNotFoundError
     """
     # Cast to str to temporarily preserve old behavior, see https://github.com/openforcefield/openff-toolkit/issues/2095
-    if not(str(filename).endswith(".pt")):
-        raise BadFileSuffixError(f"OpenFF NAGL models are based on PyTorch files and expect a `.pt` suffix. Found an unrecognized file path extension "
-                                 f"on {filename=}")
+    if not (str(filename).endswith(".pt")):
+        raise BadFileSuffixError(
+            f"OpenFF NAGL models are based on PyTorch files and expect a `.pt` suffix. Found an "
+            f"unrecognized file path extension on {filename=}"
+        )
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
     # See if the file has a known hash
@@ -123,9 +126,7 @@ def get_model(
             )
 
         if prefix == "5072":
-            file_url = (
-                f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
-            )
+            file_url = f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
         else:
             file_url = f"https://zenodo.org/api/records/{zenodo_id}/files/{filename}"
 
@@ -134,23 +135,18 @@ def get_model(
         except urllib.error.HTTPError:
             raise FileNotFoundError(f"No file at {file_url}")
 
-    raise FileNotFoundError(
-        f"Could not find asset with name '{filename}' in any release"
-    )
+    raise FileNotFoundError(f"Could not find asset with name '{filename}' in any release")
 
 
 def assert_hash_equal(cached_path, expected_hash):
     actual_hash = _get_sha256(cached_path)
     if actual_hash != expected_hash:
         raise HashComparisonFailedException(
-            f"NAGL model file hash check failed. Expected hash is "
-            f"{expected_hash} but actual hash is {actual_hash}"
+            f"NAGL model file hash check failed. Expected hash is {expected_hash} but actual hash is {actual_hash}"
         )
 
 
-def _download_and_verify_file(
-    url: str, cached_path: pathlib.Path, file_hash: None | str = None
-) -> str:
+def _download_and_verify_file(url: str, cached_path: pathlib.Path, file_hash: None | str = None) -> str:
     """Download a file from URL to cached_path and optionally verify its hash."""
     path_to_file, _ = urllib.request.urlretrieve(url, filename=cached_path.as_posix())
 

@@ -1,18 +1,21 @@
 import os
-import pathlib
 import shutil
 
 import platformdirs
 import pytest
 
-from openff.nagl_models import __file__ as root
-from openff.nagl_models import list_available_nagl_models, get_models_by_type, validate_nagl_model_path
+from openff.nagl_models import (
+    get_models_by_type,
+    list_available_nagl_models,
+    validate_nagl_model_path,
+)
 from openff.nagl_models._dynamic_fetch import (
-    get_model,
+    BadFileSuffixError,
     HashComparisonFailedException,
     UnableToParseDOIException,
-    BadFileSuffixError,
+    get_model,
 )
+
 
 @pytest.fixture
 def hide_cache():
@@ -46,22 +49,22 @@ def test_zenodo_fetching_and_caching(hide_cache):
     # openff-gnn-am1bcc-0.1.0-rc.3.pt) uploaded to that sandbox record
 
     from pytest_socket import SocketBlockedError, disable_socket, enable_socket
-    from openff.nagl_models._dynamic_fetch import CACHE_DIR
+
     from openff.nagl_models import get_nagl_model_dirs_paths
+    from openff.nagl_models._dynamic_fetch import CACHE_DIR
 
     disable_socket()
 
     # Ensure that the cache is hidden,
     with pytest.raises(FileNotFoundError):
-
         get_model(
             "my_favorite_model.pt",
         )
 
     # Ensure the test file isn't in the cache or the nagl_models package
-    assert not (os.path.exists(CACHE_DIR / 'my_favorite_model.pt'))
+    assert not (os.path.exists(CACHE_DIR / "my_favorite_model.pt"))
     for dir_path in get_nagl_model_dirs_paths():
-        assert not (os.path.exists(dir_path / 'my_favorite_model.pt'))
+        assert not (os.path.exists(dir_path / "my_favorite_model.pt"))
 
     # Ensure that trying to fetch a
     # model fails due to lack of internet access
@@ -82,7 +85,7 @@ def test_zenodo_fetching_and_caching(hide_cache):
     )
 
     # Ensure that the file is really in the cache
-    assert os.path.exists(CACHE_DIR / 'my_favorite_model.pt')
+    assert os.path.exists(CACHE_DIR / "my_favorite_model.pt")
     # Ensure that, once fetched, the file can be gotten without accessing the internet.
     disable_socket()
     # Ensure that cached files can be accessed when no optional arguments are provided
@@ -117,17 +120,17 @@ def test_zenodo_fetching_and_caching(hide_cache):
             file_hash="wrong_hash",
         )
 
+
 def test_error_on_missing_file():
-    with pytest.raises(
-            FileNotFoundError,
-            match="Could not find asset with name 'FOOBAR"):
+    with pytest.raises(FileNotFoundError, match="Could not find asset with name 'FOOBAR"):
         get_model("FOOBAR.pt")
+
 
 def test_error_on_bad_file_suffix():
     with pytest.raises(
-            BadFileSuffixError,
-            match="Found an unrecognized file path extension on filename='FOOBAR.txt'"):
-
+        BadFileSuffixError,
+        match="Found an unrecognized file path extension on filename='FOOBAR.txt'",
+    ):
         get_model("FOOBAR.txt")
 
 
@@ -162,11 +165,12 @@ def test_no_matching_file_at_doi():
     with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
         get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")
 
+
 # Test to ensure that an unsupported behavior needed by OpenFE remains functional
 # This is temporary, if this test fails please update on the following issues:
 # https://github.com/openforcefield/openff-toolkit/issues/2095
 # https://github.com/openforcefield/openff-nagl-models/issues/68
-@pytest.mark.parametrize('list_method_output', list_available_nagl_models() + get_models_by_type('am1bcc'))
-@pytest.mark.parametrize('get_method', [get_model, validate_nagl_model_path])
+@pytest.mark.parametrize("list_method_output", list_available_nagl_models() + get_models_by_type("am1bcc"))
+@pytest.mark.parametrize("get_method", [get_model, validate_nagl_model_path])
 def test_output_of_list_models_is_input_to_model_use(list_method_output, get_method):
     get_method(list_method_output)
