@@ -97,7 +97,7 @@ def get_model(
         # This isn't a final decision on any behaviors, just a temporary workaround.
         if file_hash is not None:
             assert_hash_equal(file_path, file_hash)
-        return file_path
+        return file_path.as_posix()
     except FileNotFoundError:
         pass
 

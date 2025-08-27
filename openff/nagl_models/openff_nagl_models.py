@@ -6,7 +6,6 @@ will be used to find the model files.
 import importlib.resources
 import os
 import pathlib
-import typing
 
 
 def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
@@ -19,12 +18,12 @@ def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
 
     Returns
     -------
-    dir_paths : list[pathlib.Path]
-        The list of directory paths containing the NAGL model files.
+    The list of directory paths containing the NAGL model files.
     """
     model_types = ["am1bcc"]
     base = importlib.resources.files("openff.nagl_models")
-    return [base / "models" / model_type for model_type in model_types]
+
+    return [base / "models" / model_type for model_type in model_types] # type: ignore[misc]
 
 
 def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
@@ -33,7 +32,7 @@ def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
 
     Returns
     -------
-    list[pathlib.Path]
+    dir_paths
         The list of directory paths containing the NAGL model files.
     """
     from importlib.metadata import entry_points
@@ -52,22 +51,21 @@ def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
 
 def search_file_path(
     file_name: str,
-    search_paths: typing.Optional[typing.Union[str, list[str]]] = None,
-) -> typing.Optional[pathlib.Path]:
+    search_paths: str | list[str] | None = None,
+) -> pathlib.Path | None:
     """
     Search for a file in a list of paths.
 
     Parameters
     ----------
-    file_name : str
+    file_name
         The name of the file to search for.
-    search_paths : typing.Optional[typing.Union[str, list[str]]], typing.Optional
+    search_paths
         The paths to search for the file, by default None
 
     Returns
     -------
-    typing.Optional[pathlib.Path]
-        The path to the file if it was found, otherwise None.
+    The path to the file if it was found, otherwise None.
     """
     if search_paths is None:
         search_paths = []
@@ -91,7 +89,7 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
 
     Parameters
     ----------
-    model : str
+    model
         The name or path of the model file to search for.
         This function searches for model files either in the
         current working directory or in the directories
@@ -123,7 +121,7 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
         PosixPath('/home/.../my-local-gnn.pt')
 
     """
-    model_paths = load_nagl_model_directory_entry_points()
+    model_paths = [path.as_posix() for path in load_nagl_model_directory_entry_points()]
     full_path = search_file_path(model, model_paths)
     if full_path is None:
         raise FileNotFoundError(f"Could not find {model}")
@@ -187,9 +185,9 @@ def get_models_by_type(
 
     Parameters
     ----------
-    model_type : str
+    model_type
         The type of model to search for.
-    production_only : bool, typing.Optional
+    production_only
         Whether to only search for production models, by default False.
 
     Returns
@@ -216,7 +214,7 @@ def get_models_by_type(
     """
     from packaging.version import Version
 
-    base_dir = importlib.resources.files("openff.nagl_models") / "models" / model_type
+    base_dir: pathlib.Path = importlib.resources.files("openff.nagl_models") / "models" / model_type # type: ignore
     if not os.path.isdir(base_dir):
         raise ValueError(
             f"Model type {model_type} not found in openff-nagl-models. "
