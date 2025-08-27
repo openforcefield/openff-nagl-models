@@ -6,6 +6,7 @@ import platformdirs
 import pytest
 
 from openff.nagl_models import __file__ as root
+from openff.nagl_models import list_available_nagl_models, get_models_by_type, validate_nagl_model_path
 from openff.nagl_models._dynamic_fetch import (
     get_model,
     HashComparisonFailedException,
@@ -160,3 +161,12 @@ def test_malformed_doi():
 def test_no_matching_file_at_doi():
     with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
         get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")
+
+# Test to ensure that an unsupported behavior needed by OpenFE remains functional
+# This is temporary, if this test fails please update on the following issues:
+# https://github.com/openforcefield/openff-toolkit/issues/2095
+# https://github.com/openforcefield/openff-nagl-models/issues/68
+@pytest.mark.parametrize('list_method_output', list_available_nagl_models() + get_models_by_type('am1bcc'))
+@pytest.mark.parametrize('get_method', [get_model, validate_nagl_model_path])
+def test_output_of_list_models_is_input_to_model_use(list_method_output, get_method):
+    get_method(list_method_output)

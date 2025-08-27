@@ -14,10 +14,21 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
-## v0.4.0 - 2025-08-11
+## v0.4.1 - 2025-08-19
 
 ### Authors
 <!-- GitHub usernames of contributors to this release -->
+- @mattwthompson
+- @j-wags
+- @Ialibay
+
+### Behaviors changed
+- Temporarily re-enabled support for certain methods to accept absolute paths to model files as input. 
+
+
+## v0.4.0 - 2025-08-11
+
+### Authors
 - @lilyminium
 - @Yoshanuikabundi
 - @mattwthompson
