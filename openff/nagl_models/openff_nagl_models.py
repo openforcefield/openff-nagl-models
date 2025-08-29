@@ -156,7 +156,7 @@ def list_available_nagl_models() -> list[pathlib.Path]:
     from openff.nagl_models._dynamic_fetch import CACHE_DIR, KNOWN_HASHES
 
     model_paths = load_nagl_model_directory_entry_points()
-    model_files = []
+    model_files: list[pathlib.Path] = list()
     for path in model_paths:
         model_files.extend(path.glob("*.pt"))
 
