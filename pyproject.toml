@@ -1,45 +1,51 @@
 [build-system]
+build-backend = "setuptools.build_meta"
+
 requires = [
   "setuptools",
   "versioningit",
 ]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages]
-find = {}
 
 [project]
 name = "openff-nagl-models"
 description = "OpenFF NAGL Models"
-license = { file = "LICENSE" }
-authors = [
-    {name = "Lily Wang", email = "lily.wang@openforcefield.org"},
-]
-maintainers = [
-    {name = "Lily Wang", email = "lily.wang@openforcefield.org"},
-]
 readme = "README.md"
+license = { file = "LICENSE" }
+maintainers = [
+  { name = "Lily Wang", email = "lily.wang@openforcefield.org" },
+]
+authors = [
+  { name = "Lily Wang", email = "lily.wang@openforcefield.org" },
+]
 requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [ "version" ]
+
 dependencies = [
-  "platformdirs",
   "packaging",
+  "platformdirs",
 ]
-dynamic = ["version"]
-
-[project.optional-dependencies]
-test = [
-    "pytest>=6.0",
-    "numpy",
+optional-dependencies.test = [
+  "numpy",
+  "pytest>=6",
 ]
+urls.Documentation = "https://openff-nagl-models.readthedocs.io"
+urls.Repository = "https://github.com/openforcefield/openff-nagl-models"
+entry-points."openforcefield.nagl_model_directory".get_nagl_model_dirs_paths = "openff.nagl_models:get_nagl_model_dirs_paths"
 
-[project.entry-points."openforcefield.nagl_model_directory"]
-get_nagl_model_dirs_paths = "openff.nagl_models:get_nagl_model_dirs_paths"
+[tool.setuptools.packages]
+find = {}
 
-[project.urls]
-Repository = "https://github.com/openforcefield/openff-nagl-models"
-Documentation = "https://openff-nagl-models.readthedocs.io"
+[tool.ruff]
+line-length = 119
+namespace-packages = [ "openff/interchange/" ]
 
-[tool.versioningit]
+lint.select = [ "E", "F", "I", "NPY", "RUF", "UP", "W" ]
 
 [tool.mypy]
 mypy_path = "stubs/"
@@ -60,10 +66,12 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = [
-    "openff/nagl_models/tests",
+  "openff/nagl_models/tests",
 ]
 
 [tool.coverage.run]
 omit = [
-    "*/*/tests/*",
+  "*/*/tests/*",
 ]
+
+[tool.versioningit]

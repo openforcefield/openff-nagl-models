@@ -70,7 +70,7 @@ def search_file_path(
     if search_paths is None:
         search_paths = []
 
-    if isinstance(search_paths, (str, pathlib.Path)):
+    if isinstance(search_paths, str | pathlib.Path):
         search_paths = [search_paths]
 
     search_paths.insert(0, ".")
@@ -153,7 +153,7 @@ def list_available_nagl_models() -> list[pathlib.Path]:
         PosixPath('.../am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 
     """
-    from openff.nagl_models._dynamic_fetch import KNOWN_HASHES, CACHE_DIR
+    from openff.nagl_models._dynamic_fetch import CACHE_DIR, KNOWN_HASHES
 
     model_paths = load_nagl_model_directory_entry_points()
     model_files = []
@@ -164,11 +164,7 @@ def list_available_nagl_models() -> list[pathlib.Path]:
 
     # look for all .pt files in the cache directory, but only those that are
     # expected to also be found in release assets
-    cached_paths = [
-        cached_file
-        for cached_file in CACHE_DIR.rglob("*.pt")
-        if cached_file.name in KNOWN_HASHES
-    ]
+    cached_paths = [cached_file for cached_file in CACHE_DIR.rglob("*.pt") if cached_file.name in KNOWN_HASHES]
 
     return entry_point_paths + cached_paths
 
