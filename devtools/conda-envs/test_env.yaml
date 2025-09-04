@@ -16,3 +16,5 @@ dependencies:
   - pytest-randomly
   - openff-nagl-base >=0.4.0
 
+  - # Type-checking
+  - mypy
