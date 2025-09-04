@@ -14,6 +14,15 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
+## Current development
+
+### Behaviors changed
+- `openff.nagl_models._dynamic_fetch.get_model` now returns `str` (#70)
+
+### Bugfixes
+- `openff.nagl_models._dynamic_fetch.get_model` now returns `str` (#70)
+
+
 ## v0.4.1 - 2025-08-19
 
 ### Authors
@@ -23,8 +32,8 @@ The rules for this file:
 - @Ialibay
 
 ### Behaviors changed
-- Temporarily re-enabled support for certain methods to accept absolute paths to model files as input. 
 
+- Temporarily re-enabled support for certain methods to accept absolute paths to model files as input.
 
 ## v0.4.0 - 2025-08-11
 
