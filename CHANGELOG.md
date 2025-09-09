@@ -16,6 +16,16 @@ The rules for this file:
 
 ## Current development
 
+## v1.0 - 2025-09-09
+
+### Authors
+<!-- GitHub usernames of contributors to this release -->
+- @mattwthompson
+- @lilyminium
+
+### Added
+- Added the openff-gnn-am1bcc-1.0.0.pt model (PR #79)
+
 ### Behaviors changed
 - `openff.nagl_models._dynamic_fetch.get_model` now returns `str` (#70)
 
