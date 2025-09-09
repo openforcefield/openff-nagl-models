@@ -2,17 +2,18 @@
 Unit and regression test for the openff_nagl_models package.
 """
 
-import os
 import importlib.resources
+import os
 from importlib.metadata import entry_points
 
 import pytest
-from openff.nagl_models import validate_nagl_model_path, list_available_nagl_models
+
+from openff.nagl_models import list_available_nagl_models, validate_nagl_model_path
 from openff.nagl_models.openff_nagl_models import get_models_by_type
 
 
 def find_model_files():
-    base = importlib.resources.files('openff.nagl_models')
+    base = importlib.resources.files("openff.nagl_models")
     filenames = sorted(base.glob("models/*/*.pt"))
     assert len(filenames) > 0
     return filenames
@@ -57,17 +58,15 @@ def test_list_models():
 
 def test_entry_points():
     for entry_point in entry_points().select(
-        group='openforcefield.nagl_model_directory',
+        group="openforcefield.nagl_model_directory",
     ):
         paths = entry_point.load()()
         for path in paths:
             assert os.path.exists(path)
 
+
 def test_get_models_by_type():
-    all_model_stems = [
-        path.stem
-        for path in get_models_by_type(model_type="am1bcc")
-    ]
+    all_model_stems = [path.stem for path in get_models_by_type(model_type="am1bcc")]
     expected_stems = [
         "openff-gnn-am1bcc-0.0.1-alpha.1",
         "openff-gnn-am1bcc-0.1.0-rc.1",
@@ -78,10 +77,12 @@ def test_get_models_by_type():
 
     assert all_model_stems == expected_stems
 
+
 def test_get_models_by_type_does_not_exist():
     err = "Model type does-not-exist not found in openff-nagl-models."
     with pytest.raises(ValueError, match=err):
         get_models_by_type(model_type="does-not-exist")
+
 
 def test_test_get_models_by_type_production():
     latest_models = get_models_by_type(model_type="am1bcc", production_only=True)

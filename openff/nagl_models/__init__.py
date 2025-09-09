@@ -5,22 +5,22 @@ Models used with NAGL
 
 from importlib.metadata import version
 
-from .openff_nagl_models import (
+from openff.nagl_models.openff_nagl_models import (
+    get_models_by_type,
     get_nagl_model_dirs_paths,
+    list_available_nagl_models,
     load_nagl_model_directory_entry_points,
     validate_nagl_model_path,
-    list_available_nagl_models,
-    get_models_by_type
 )
-from openff.nagl_models._dynamic_fetch import get_model
 
 __all__ = (
+    "get_model",
+    "get_models_by_type",
     "get_nagl_model_dirs_paths",
+    "list_available_nagl_models",
     "load_nagl_model_directory_entry_points",
     "validate_nagl_model_path",
-    "list_available_nagl_models",
-    "get_models_by_type",
-    "get_model",
 )
 
 __version__ = version("openff.nagl_models")
+from openff.nagl_models._dynamic_fetch import get_model

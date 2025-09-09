@@ -1,12 +1,12 @@
-import functools
 import hashlib
 import json
-import re
 import pathlib
+import re
 import urllib.request
-import platformdirs
-from packaging.version import Version
 
+import platformdirs
+
+from openff.nagl_models import validate_nagl_model_path
 
 RELEASES_URL = "https://api.github.com/repos/openforcefield/openff-nagl-models/releases"
 
@@ -29,11 +29,16 @@ class UnableToParseDOIException(Exception):
     """Exception raised when a Zenodo DOI is unable to be parsed according to the expected pattern."""
 
 
+class BadFileSuffixError(Exception):
+    """Exception raised when a model file with an incorrect suffix is requested (this will happen a
+    lot with the current working of the ToolkitRegistry.call method, where things like "am1bcc" will
+    be requested from get_model due to toolkit precedence."""
+
+
 def get_release_metadata() -> list[dict]:
     return json.loads(urllib.request.urlopen(RELEASES_URL).read().decode("utf-8"))
 
 
-@functools.lru_cache()
 def get_model(
     filename: str,
     doi: None | str = None,
@@ -41,9 +46,9 @@ def get_model(
 ) -> str:
     """
     Return the path of a model as cached on disk, downloading if necessary. The lookup order of this implementation is:
-    1. Try to retrieve the file from the local cache
-    2. Try to fetch the file from a release of https://github.com/openforcefield/openff-nagl-models
-    3. Try to fetch the file from the DOI, if provided
+    1. Try to retrieve the file from the installed `openff-nagl-models` python package on disk
+    2. Try to retrieve the file from the local cache
+    3. Try to fetch the file from the Zenodo DOI, if provided
 
     This method will raise an HashComparisonFailedException as soon as a hash mismatch is encountered. So if
     there's a file with a matching name but a non-matching hash in the local cache, an exception will be raised
@@ -69,43 +74,46 @@ def get_model(
     Returns
     -------
     str
-        The path to the file if it was found. If the file wasn't found then a FileNotFoundError is rasied.
+        The path to the file if it was found. If the file wasn't found then a FileNotFoundError is raised.
 
     Raises
     ------
     HashComparisonFailedException
     FileNotFoundError
     """
-
+    # Cast to str to temporarily preserve old behavior, see https://github.com/openforcefield/openff-toolkit/issues/2095
+    if not (str(filename).endswith(".pt")):
+        raise BadFileSuffixError(
+            f"OpenFF NAGL models are based on PyTorch files and expect a `.pt` suffix. Found an "
+            f"unrecognized file path extension on {filename=}"
+        )
     pathlib.Path(CACHE_DIR).mkdir(exist_ok=True)
 
-    cached_path = CACHE_DIR / filename
-
+    # See if the file has a known hash
     if file_hash is None and filename in KNOWN_HASHES:
         file_hash = KNOWN_HASHES[filename]
 
+    # See if it's available in the openff-nagl-models python package
+    try:
+        file_path = validate_nagl_model_path(filename)
+        # If filename happens to be an absolute path (not guaranteed this is in scope, but is temporarily supported,
+        # see https://github.com/openforcefield/openff-nagl-models/issues/68) the hash check will be skipped.
+        # This isn't a final decision on any behaviors, just a temporary workaround.
+        if file_hash is not None:
+            assert_hash_equal(file_path, file_hash)
+        return file_path.as_posix()
+    except FileNotFoundError:
+        pass
+
+    # Then check if it's in the cache
+    cached_path = CACHE_DIR / filename
     if cached_path.exists():
         if file_hash:
             assert_hash_equal(cached_path, file_hash)
 
         return cached_path.as_posix()
 
-    release_metadata = get_release_metadata()
-
-    # tags with "v" prefix can't easily be sorted, but the result of passing through Version
-    # are not necessarily 1:1 with the metadata in the releases, keep both and map between
-    releases: dict[Version:str] = {
-        Version(release["tag_name"]): release for release in release_metadata
-    }
-
-    for version in reversed(sorted(releases)):
-        release = releases[version]
-        for file in release["assets"]:
-            if file["name"] == filename:
-                return _download_and_verify_file(
-                    file["browser_download_url"], cached_path, file_hash
-                )
-
+    # Otherwise try to fetch from DOI
     if doi:
         try:
             match = re.search(r"10\.(5072|5281)/zenodo\.([0-9]+)", doi)
@@ -119,9 +127,7 @@ def get_model(
             )
 
         if prefix == "5072":
-            file_url = (
-                f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
-            )
+            file_url = f"https://sandbox.zenodo.org/api/records/{zenodo_id}/files/{filename}"
         else:
             file_url = f"https://zenodo.org/api/records/{zenodo_id}/files/{filename}"
 
@@ -130,23 +136,18 @@ def get_model(
         except urllib.error.HTTPError:
             raise FileNotFoundError(f"No file at {file_url}")
 
-    raise FileNotFoundError(
-        f"Could not find asset with name '{filename}' in any release"
-    )
+    raise FileNotFoundError(f"Could not find asset with name '{filename}' in any release")
 
 
 def assert_hash_equal(cached_path, expected_hash):
     actual_hash = _get_sha256(cached_path)
     if actual_hash != expected_hash:
         raise HashComparisonFailedException(
-            f"NAGL model file hash check failed. Expected hash is "
-            f"{expected_hash} but actual hash is {actual_hash}"
+            f"NAGL model file hash check failed. Expected hash is {expected_hash} but actual hash is {actual_hash}"
         )
 
 
-def _download_and_verify_file(
-    url: str, cached_path: pathlib.Path, file_hash: None | str = None
-) -> str:
+def _download_and_verify_file(url: str, cached_path: pathlib.Path, file_hash: None | str = None) -> str:
     """Download a file from URL to cached_path and optionally verify its hash."""
     path_to_file, _ = urllib.request.urlretrieve(url, filename=cached_path.as_posix())
 

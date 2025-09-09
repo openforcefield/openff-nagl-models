@@ -14,6 +14,39 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
+## Current development
+
+### Behaviors changed
+- `openff.nagl_models._dynamic_fetch.get_model` now returns `str` (#70)
+
+### Bugfixes
+- `openff.nagl_models._dynamic_fetch.get_model` now returns `str` (#70)
+
+
+## v0.4.1 - 2025-08-19
+
+### Authors
+<!-- GitHub usernames of contributors to this release -->
+- @mattwthompson
+- @j-wags
+- @Ialibay
+
+### Behaviors changed
+
+- Temporarily re-enabled support for certain methods to accept absolute paths to model files as input.
+
+## v0.4.0 - 2025-08-11
+
+### Authors
+- @lilyminium
+- @Yoshanuikabundi
+- @mattwthompson
+- @j-wags
+- @jaclark5 (assisted with debugging caching issues)
+
+### New features
+- Added fetching by DOI, hash verification, and caching. (#44, #61, #62)
+
 ## v0.3.0 - 2024-07-29
 
 ### Authors
