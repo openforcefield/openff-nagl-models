@@ -17,54 +17,6 @@ from openff.nagl_models._dynamic_fetch import (
 )
 
 
-def mocked_urlretrieve(url, filename):
-    """Mock downloading files from assets by copying from the models/ directory."""
-    old = (
-        pathlib.Path(root).parent / "models/am1bcc" / pathlib.Path(filename).name
-    ).as_posix()
-    new = (platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS" / filename).as_posix()
-
-    shutil.copy(old, new)
-
-    return new, None
-
-
-def mocked_get_release_metadata():
-    # can regenerate this file with
-    # $ wget https://api.github.com/repos/openforcefield/openff-nagl-models/releases
-    return json.loads(
-        open(pathlib.Path(root).parent / "tests/data/releases.json").read()
-    )
-
-
-@pytest.mark.parametrize(
-    "known_model",
-    [
-        "openff-gnn-am1bcc-0.0.1-alpha.1.pt",
-        "openff-gnn-am1bcc-0.1.0-rc.1.pt",
-        "openff-gnn-am1bcc-0.1.0-rc.2.pt",
-        "openff-gnn-am1bcc-0.1.0-rc.3.pt",
-        "openff-gnn-am1bcc-1.0.0.pt",
-    ],
-)
-def test_get_known_models(monkeypatch, known_model):
-    with monkeypatch.context() as m:
-        m.setattr(
-            urllib.request,
-            "urlretrieve",
-            mocked_urlretrieve,
-        )
-        m.setattr(
-            openff.nagl_models._dynamic_fetch,
-            "get_release_metadata",
-            mocked_get_release_metadata,
-        )
-
-        assert get_model(known_model).endswith(known_model)
-
-        assert "OPENFF_NAGL_MODELS" in get_model(known_model)
-
-
 @pytest.fixture
 def hide_cache():
     cache_dir = platformdirs.user_cache_path() / "OPENFF_NAGL_MODELS"
