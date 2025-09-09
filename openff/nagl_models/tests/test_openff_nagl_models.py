@@ -84,5 +84,6 @@ def test_get_models_by_type_does_not_exist():
         get_models_by_type(model_type="does-not-exist")
 
 def test_test_get_models_by_type_production():
-    latest_model = get_models_by_type(model_type="am1bcc", production_only=True)
-    assert latest_model == []
+    latest_models = get_models_by_type(model_type="am1bcc", production_only=True)
+    assert len(latest_models) == 1
+    assert latest_models[0].stem == "openff-gnn-am1bcc-1.0.0"
