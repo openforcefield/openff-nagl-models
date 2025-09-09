@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: testpypi_deploy
-        uses: MDAnalysis/pypi-deployment@main
+        uses: mdanalysis/pypi-deployment@main
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         with:
           test_submission: true
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: pypi_deploy
-        uses: MDAnalysis/pypi-deployment@main
+        uses: mdanalysis/pypi-deployment@main
         if: github.event_name == 'release' && github.event.action == 'published'
         with:
           package_name: 'openff-nagl-models'
