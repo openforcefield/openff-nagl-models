@@ -53,11 +53,30 @@ Include release notes at your discretion.
 
 ## Make the pip package and upload to pypi
 
+First, build the source distribution:
 ```
 python -m pip install pipx twine
-git checkout v0.4.0
+git checkout v0.4.0 # replace with new tag
 python -m pipx run build --wheel --sdist
-python3 -m twine upload --repository pypi dist/openff_nagl_models-0.4.0*
+```
+
+Then upload to TestPyPI:
+```
+python3 -m twine upload --repository testpypi dist/openff_nagl_models-0.4.0* # replace with new version
+```
+
+Redownload into an empty environment and run tests:
+
+```
+micromamba env create --name test-openff-nagl-models-2025-09-0
+micromamba install python # not needed with conda/mamba, most likely
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple openff-nagl-models==2025.09.0 # replace with new version
+python -m pip install numpy pytest pytest_socket # test dependencies
+```
+
+Then run the tests with pytest. Assuming they pass, you're good to go for upload onto regular PyPI:
+```
+python3 -m twine upload --repository pypi dist/openff_nagl_models-0.4.0* # replace with new version
 ```
 
 ## Make the `conda-forge` packages
