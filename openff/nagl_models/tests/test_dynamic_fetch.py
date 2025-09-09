@@ -44,6 +44,7 @@ def mocked_get_release_metadata():
         "openff-gnn-am1bcc-0.1.0-rc.1.pt",
         "openff-gnn-am1bcc-0.1.0-rc.2.pt",
         "openff-gnn-am1bcc-0.1.0-rc.3.pt",
+        "openff-gnn-am1bcc-1.0.0.pt",
     ],
 )
 def test_get_known_models(monkeypatch, known_model):
