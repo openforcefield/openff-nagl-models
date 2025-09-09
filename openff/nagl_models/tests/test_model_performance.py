@@ -63,6 +63,20 @@ pytest.importorskip("openff.nagl")
                 0.39826,
             ],
         ),
+        (
+            "openff-gnn-am1bcc-1.0.0.pt",
+            [
+                -0.09629,
+                0.13245,
+                -0.60293,
+                0.04465,
+                0.04465,
+                0.04465,
+                0.01728,
+                0.01728,
+                0.39826,
+            ],
+        ),
     ],
 )
 def test_models_ethanol(model_file, expected_charges):

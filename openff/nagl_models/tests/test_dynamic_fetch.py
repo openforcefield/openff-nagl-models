@@ -141,6 +141,7 @@ def test_error_on_bad_file_suffix():
         "openff-gnn-am1bcc-0.1.0-rc.1.pt",
         "openff-gnn-am1bcc-0.1.0-rc.2.pt",
         "openff-gnn-am1bcc-0.1.0-rc.3.pt",
+        "openff-gnn-am1bcc-1.0.0.pt",
     ],
 )
 def test_all_models_loadable(model):

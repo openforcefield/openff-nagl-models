@@ -72,6 +72,7 @@ def test_get_models_by_type():
         "openff-gnn-am1bcc-0.1.0-rc.1",
         "openff-gnn-am1bcc-0.1.0-rc.2",
         "openff-gnn-am1bcc-0.1.0-rc.3",
+        "openff-gnn-am1bcc-1.0.0",
     ]
 
     assert all_model_stems == expected_stems
@@ -84,5 +85,6 @@ def test_get_models_by_type_does_not_exist():
 
 
 def test_test_get_models_by_type_production():
-    latest_model = get_models_by_type(model_type="am1bcc", production_only=True)
-    assert latest_model == []
+    latest_models = get_models_by_type(model_type="am1bcc", production_only=True)
+    assert len(latest_models) == 1
+    assert latest_models[0].stem == "openff-gnn-am1bcc-1.0.0"
