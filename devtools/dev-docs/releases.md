@@ -36,6 +36,8 @@ KNOWN_HASHES = {
 All released models should be added and follow this pattern; run `sha256` directly on the model(s) being added and
 append to the `KNOWN_HASHES` dictionary.
 
+If it's a significant release, add the model to `test_model_performance.py`
+
 Submit this change as a PR which **must be merged before making the release.**
 
 ## Make the release on GitHub
@@ -47,9 +49,7 @@ Use [CalVer](https://calver.org/), `YYYY.MM.MINOR` variant:
 
 Include release notes at your discretion.
 
-## Attach the new model(s) to the GitHub Release
-
-Do this via the web UI.
+**If you're adding a new model, you don't need to add it to the release assets - For major model releases they'll have a dedicated zenodo DOI with the release tarball.**
 
 ## Make the pip package and upload to pypi
 
