@@ -14,7 +14,15 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
-## Current development
+## v2025.09.0
+
+### Authors
+<!-- GitHub usernames of contributors to this release -->
+- @mattwthompson
+- @lilyminium
+
+### Added
+- Added the openff-gnn-am1bcc-1.0.0.pt model (PR #79)
 
 ### Behaviors changed
 - `openff.nagl_models._dynamic_fetch.get_model` now returns `str` (#70)
