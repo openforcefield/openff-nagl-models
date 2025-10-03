@@ -11,7 +11,7 @@ name = "openff-nagl-models"
 description = "OpenFF NAGL Models"
 readme = "README.md"
 license = "MIT"
-license-files = "LICENSE"
+license-files = ["LICENSE"]
 maintainers = [
   { name = "Lily Wang", email = "lily.wang@openforcefield.org" },
 ]
