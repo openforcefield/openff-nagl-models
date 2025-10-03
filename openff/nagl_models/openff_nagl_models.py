@@ -23,7 +23,7 @@ def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
     model_types = ["am1bcc"]
     base = importlib.resources.files("openff.nagl_models")
 
-    return [base / "models" / model_type for model_type in model_types] # type: ignore[misc]
+    return [base / "models" / model_type for model_type in model_types]  # type: ignore[misc]
 
 
 def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
@@ -210,7 +210,7 @@ def get_models_by_type(
     """
     from packaging.version import Version
 
-    base_dir: pathlib.Path = importlib.resources.files("openff.nagl_models") / "models" / model_type # type: ignore
+    base_dir: pathlib.Path = importlib.resources.files("openff.nagl_models") / "models" / model_type  # type: ignore
     if not os.path.isdir(base_dir):
         raise ValueError(
             f"Model type {model_type} not found in openff-nagl-models. "
