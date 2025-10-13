@@ -129,11 +129,11 @@ This model was trained, validated, and tested on the following datasets:
 | NCI 250K                                 | 85322    | 22513      |       | [Release 4 File Series - May 2012][nci-250k]                |
 | PDB                                      | 10844    | 4653       |       | [Ligand Expo][pdb]                                          |
 | Peptides (1-4 AA)                        | 22690    |            |       | Generated from RDKit through combinations of FASTA codes    |
-| Small ChEMBL molecules   (< 200 Da)      | 39909    |            | 17104 | Curated from the [ChEMBL][ChEMBL] database.                 |
+| Small ChEMBL molecules   (< 200 Da)      | 39909    |            | 17099 | Curated from the [ChEMBL][ChEMBL] database.                 |
 | OpenFF Industry Benchmark Set (v1.1)     |          |            | 13671 | [QCArchive Submission][qca-openff-benchmark]                |
-| SPICE                                    |          |            | 14652 | [SPICE dataset][spice]                                      |
+| SPICE                                    |          |            | 14604 | [SPICE dataset][spice]                                      |
 | Peptides with PTMs                       |          |            | 6073  | Peptide chains with common post-translational modifications |
-| Total                                    | 311113   | 61593      | 51500 |                                                             |
+| Total                                    | 311113   | 61593      | 51477 |                                                             |
 
 
 [enamine-10240]: https://enamine.net/compound-libraries/diversity-libraries/dds-10560
