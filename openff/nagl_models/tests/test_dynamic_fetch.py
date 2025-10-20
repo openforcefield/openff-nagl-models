@@ -129,7 +129,7 @@ def test_error_on_missing_file():
 def test_error_on_bad_file_suffix():
     with pytest.raises(
         BadFileSuffixError,
-        match="Found an unrecognized file path extension on filename='FOOBAR.txt'",
+        match=r"Found an unrecognized file path extension on filename='FOOBAR.txt'",
     ):
         get_model("FOOBAR.txt")
 
@@ -163,7 +163,7 @@ def test_malformed_doi():
 
 
 def test_no_matching_file_at_doi():
-    with pytest.raises(FileNotFoundError, match="sandbox.zenodo"):
+    with pytest.raises(FileNotFoundError, match=r"sandbox.zenodo"):
         get_model("file_that_doesnt_exist.pt", doi="10.5072/zenodo.278300")
 
 

@@ -2,7 +2,7 @@
 build-backend = "setuptools.build_meta"
 
 requires = [
-  "setuptools",
+  "setuptools>=77.0.3",
   "versioningit",
 ]
 
@@ -10,7 +10,8 @@ requires = [
 name = "openff-nagl-models"
 description = "OpenFF NAGL Models"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 maintainers = [
   { name = "Lily Wang", email = "lily.wang@openforcefield.org" },
 ]
@@ -47,22 +48,6 @@ namespace-packages = [ "openff/interchange/" ]
 
 lint.select = [ "E", "F", "I", "NPY", "RUF", "UP", "W" ]
 
-[tool.mypy]
-mypy_path = "stubs/"
-python_version = "3.11"
-warn_unused_configs = true
-warn_unused_ignores = true
-warn_incomplete_stub = true
-show_error_codes = true
-
-[[tool.mypy.overrides]]
-module = [
-    "openff.toolkit",
-    "openff.nagl.*",
-    "pytest_socket",
-]
-ignore_missing_imports = true
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = [
@@ -73,5 +58,21 @@ testpaths = [
 omit = [
   "*/*/tests/*",
 ]
+
+[tool.mypy]
+mypy_path = "stubs/"
+python_version = "3.11"
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_incomplete_stub = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+  "openff.toolkit",
+  "openff.nagl.*",
+  "pytest_socket",
+]
+ignore_missing_imports = true
 
 [tool.versioningit]
