@@ -10,6 +10,7 @@ hidden: true
 
 Overview <self>
 models/index.md
+CHANGELOG.md
 
 :::
 
