@@ -41,7 +41,8 @@ entry-points."openforcefield.nagl_model_directory".get_nagl_model_dirs_paths = "
 
 [tool.setuptools.packages.find]
 include = [ 'openff.nagl_models*' ]
-include = [ 'openff.nagl_models.tests*' ]  # would be nice to move tests/ -> _tests/
+# would be nice to move tests/ -> _tests/
+exclude = [ 'openff.nagl_models.tests*' ]
 
 [tool.ruff]
 line-length = 119
