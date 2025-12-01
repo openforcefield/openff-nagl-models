@@ -39,8 +39,9 @@ urls.Documentation = "https://openff-nagl-models.readthedocs.io"
 urls.Repository = "https://github.com/openforcefield/openff-nagl-models"
 entry-points."openforcefield.nagl_model_directory".get_nagl_model_dirs_paths = "openff.nagl_models:get_nagl_model_dirs_paths"
 
-[tool.setuptools.packages]
-find = {}
+[tool.setuptools.packages.find]
+include = [ 'openff.nagl_models*' ]
+include = [ 'openff.nagl_models.tests*' ]  # would be nice to move tests/ -> _tests/
 
 [tool.ruff]
 line-length = 119
