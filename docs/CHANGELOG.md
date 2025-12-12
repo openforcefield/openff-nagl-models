@@ -14,6 +14,11 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
+## Current development
+
+### Bugfixes
+- Python files not in the Python module are no longer packaged. (#86)
+
 ## v2025.09.0
 
 ### Authors
