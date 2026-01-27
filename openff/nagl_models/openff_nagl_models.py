@@ -7,6 +7,7 @@ import importlib.resources
 import os
 import pathlib
 import warnings
+from typing import Literal, overload
 
 
 def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
@@ -127,6 +128,14 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
     if full_path is None:
         raise FileNotFoundError(f"Could not find {model}")
     return full_path
+
+
+@overload
+def list_available_nagl_models(with_path: Literal[True] = True) -> list[pathlib.Path]: ...
+
+
+@overload
+def list_available_nagl_models(with_path: Literal[False]) -> list[str]: ...
 
 
 def list_available_nagl_models(with_path=True) -> list[pathlib.Path] | list[str]:
