@@ -129,7 +129,7 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
     return full_path
 
 
-def list_available_nagl_models(with_path=True) -> list[pathlib.Path | str]:
+def list_available_nagl_models(with_path=True) -> list[pathlib.Path] | list[str]:
     """
     List the full paths of all available NAGL models.
 
@@ -147,7 +147,7 @@ def list_available_nagl_models(with_path=True) -> list[pathlib.Path | str]:
 
     Returns
     -------
-    list[pathlib.Path | str]
+    list[pathlib.Path] | list[str]
         The list of available NAGL models POSIX paths if ``with_path is True``, else
         ``str`` of file name without a path.
 
