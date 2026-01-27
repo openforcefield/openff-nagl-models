@@ -6,6 +6,7 @@ will be used to find the model files.
 import importlib.resources
 import os
 import pathlib
+import warnings
 
 
 def get_nagl_model_dirs_paths() -> list[pathlib.Path]:
@@ -128,7 +129,7 @@ def validate_nagl_model_path(model: str) -> pathlib.Path:
     return full_path
 
 
-def list_available_nagl_models() -> list[pathlib.Path]:
+def list_available_nagl_models(with_path=True) -> list[pathlib.Path | str]:
     """
     List the full paths of all available NAGL models.
 
@@ -136,12 +137,19 @@ def list_available_nagl_models() -> list[pathlib.Path]:
       * Python's `entry_points` mechanism
       * This package's dynamic fetching and caching of GitHub release assets
 
-    Identical models found with each method will be listed multiple times.
+    Identical models found with each method will be listed multiple times if
+    ``with_path is True``.
+
+    Parameters
+    ----------
+    with_path : bool, optional
+        If False, Default is True.
 
     Returns
     -------
-    list[pathlib.Path]
-        The list of available NAGL models.
+    list[pathlib.Path | str]
+        The list of available NAGL models POSIX paths if ``with_path is True``, else
+        ``str`` of file name without a path.
 
     Examples
     --------
@@ -165,8 +173,19 @@ def list_available_nagl_models() -> list[pathlib.Path]:
     # look for all .pt files in the cache directory, but only those that are
     # expected to also be found in release assets
     cached_paths = [cached_file for cached_file in CACHE_DIR.rglob("*.pt") if cached_file.name in KNOWN_HASHES]
-
-    return entry_point_paths + cached_paths
+    if not with_path:
+        entry_point_files = set([x.name for x in entry_point_paths])
+        cached_files = set([x.name for x in cached_paths])
+        overlapping_files = cached_files.intersection(entry_point_files)
+        if overlapping_files:
+            warnings.warn(
+                f"The following files in the cache will supersede those in the entry points: {
+                    ', '.join(overlapping_files)
+                }"
+            )
+        return list(entry_point_files) + list(cached_files)
+    else:
+        return entry_point_paths + cached_paths
 
 
 def get_models_by_type(

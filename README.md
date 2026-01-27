@@ -21,6 +21,19 @@ $^1$ We do *not* recommend using this model to assign charges in scientific work
 
 ## Usage
 
+Current models available in this repository can be applied with:
+
+```python
+from openff.nagl_models import validate_nagl_model_path
+from openff.toolkit.utils.nagl_wrapper import NAGLToolkitWrapper
+
+model_path = validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
+offmol.assign_partial_charges(
+    partial_charge_method=model_path,
+    toolkit_registry=NAGLToolkitWrapper(),
+)
+```
+
 Installing this package exposes an entry point that makes it easy to access models installed in this package.
 
 A convenience function is provided to wrap this for you:
@@ -36,7 +49,14 @@ You can also list all available models **from all entry points**:
 ```python
 >>> from openff.nagl_models import list_available_nagl_models
 >>> list_available_nagl_models()
-[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
+[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt'), ...]
+```
+
+To list available models (also listed in the [## Models](#models) table above):
+```python
+>>> from openff.nagl_models import list_available_nagl_models
+>>> list_available_nagl_models(with_path=False)
+['openff-gnn-am1bcc-0.1.0-rc.1.pt', 'openff-gnn-am1bcc-0.0.1-alpha.1.pt', ...]
 ```
 
 Or validate if a model name is found in the local directory, or an entry point directory:
