@@ -160,6 +160,10 @@ def list_available_nagl_models(with_path=True) -> list[pathlib.Path | str]:
         [PosixPath('.../am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'),
         PosixPath('.../am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 
+        >>> from openff.nagl_models import list_available_nagl_models
+        >>> list_available_nagl_models(with_path=False)
+        ['openff-gnn-am1bcc-0.1.0-rc.1.pt', 'openff-gnn-am1bcc-0.0.1-alpha.1.pt', ...]
+
     """
     from openff.nagl_models._dynamic_fetch import CACHE_DIR, KNOWN_HASHES
 
@@ -179,9 +183,8 @@ def list_available_nagl_models(with_path=True) -> list[pathlib.Path | str]:
         overlapping_files = cached_files.intersection(entry_point_files)
         if overlapping_files:
             warnings.warn(
-                f"The following files in the cache will supersede those in the entry points: {
-                    ', '.join(overlapping_files)
-                }"
+                "The following files in the cache will supersede those in the entry points: "
+                f"{', '.join(overlapping_files)}"
             )
         return list(entry_point_files) + list(cached_files)
     else:

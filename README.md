@@ -7,6 +7,7 @@
 
 This repository contains NAGL models released by the [Open Force Field Initiative](https://openforcefield.org). They are intended to be used by [OpenFF NAGL](https://github.com/openforcefield/openff-nagl).
 
+<!-- models-start -->
 ## Models
 
 | Model name | Introduced in `openff-nagl-models` version | Release state | Further notes |
@@ -18,7 +19,9 @@ This repository contains NAGL models released by the [Open Force Field Initiativ
 | `openff-gnn-am1bcc-0.0.1-alpha.1.pt` $^1$ | [v0.0.1](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.0.1) | pre-production/experimental $^1$ | [Link](docs/models/openff-gnn-am1bcc-0.0.1-alpha.1/index.md) |
 
 $^1$ We do *not* recommend using this model to assign charges in scientific work.
+<!-- models-end -->
 
+<!-- usage-start -->
 ## Usage
 
 Current models available in this repository can be applied with:
@@ -75,6 +78,8 @@ These will come sorted according to semantic versioning, where the latest releas
 >>> get_models_by_type("am1bcc")
 [PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
 ```
+
+<!-- usage-end -->
 
 #### Acknowledgements
 
