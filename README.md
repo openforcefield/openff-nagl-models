@@ -12,11 +12,11 @@ This repository contains NAGL models released by the [Open Force Field Initiativ
 
 | Model name | Introduced in `openff-nagl-models` version | Release state | Further notes |
 |---|---|---|---|
-| `openff-gnn-am1bcc-1.0.0.pt` | [v2025.09.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v2025.09.0) | Production | [Link](models/openff-gnn-am1bcc-1.0.0/index.md)
-| `openff-gnn-am1bcc-0.1.0-rc.3.pt` | [v0.3.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.3.0) | pre-production | [Link](models/openff-gnn-am1bcc-0.1.0-rc3/index.md)
-| `openff-gnn-am1bcc-0.1.0-rc.1.pt` | [v0.2.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.2.0) | pre-production | [Link](models/openff-gnn-am1bcc-0.1.0-rc2/index.md)
-| `openff-gnn-am1bcc-0.1.0-rc.1.pt` | [v0.1.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.1.0) | pre-production | [Link](models/openff-gnn-am1bcc-0.1.0-rc1/index.md)
-| `openff-gnn-am1bcc-0.0.1-alpha.1.pt` $^1$ | [v0.0.1](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.0.1) | pre-production/experimental $^1$ | [Link](models/openff-gnn-am1bcc-0.0.1-alpha.1/index.md) |
+| `openff-gnn-am1bcc-1.0.0.pt` | [v2025.09.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v2025.09.0) | Production | [Link](docs/models/openff-gnn-am1bcc-1.0.0/index.md)
+| `openff-gnn-am1bcc-0.1.0-rc.3.pt` | [v0.3.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.3.0) | pre-production | [Link](docs/models/openff-gnn-am1bcc-0.1.0-rc3/index.md)
+| `openff-gnn-am1bcc-0.1.0-rc.1.pt` | [v0.2.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.2.0) | pre-production | [Link](docs/models/openff-gnn-am1bcc-0.1.0-rc2/index.md)
+| `openff-gnn-am1bcc-0.1.0-rc.1.pt` | [v0.1.0](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.1.0) | pre-production | [Link](docs/models/openff-gnn-am1bcc-0.1.0-rc1/index.md)
+| `openff-gnn-am1bcc-0.0.1-alpha.1.pt` $^1$ | [v0.0.1](https://github.com/openforcefield/openff-nagl-models/releases/tag/v0.0.1) | pre-production/experimental $^1$ | [Link](docs/models/openff-gnn-am1bcc-0.0.1-alpha.1/index.md) |
 
 $^1$ We do *not* recommend using this model to assign charges in scientific work.
 <!-- models-end -->

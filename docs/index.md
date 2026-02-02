@@ -8,6 +8,7 @@ See the [Models](models/index.md) page for more information about the available 
 ```{include} ../README.md
 :start-after: <!-- models-start -->
 :end-before: <!-- models-end -->
+:relative-docs: docs/
 ```
 
 ```{include} ../README.md
