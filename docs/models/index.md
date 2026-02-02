@@ -1,6 +1,6 @@
 # Models
 
-Please see the individual model pages for more information.
+Please see the individual model pages listed in the navigation bar on the left for more information about each model.
 
 :::{toctree}
 ---

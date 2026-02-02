@@ -3,6 +3,19 @@
 This repository contains models trained and applied with
 [OpenFF NAGL](https://docs.openforcefield.org/projects/nagl/en/latest/).
 
+See the [Models](models/index.md) page for more information about the available models.
+
+```{include} ../README.md
+:start-after: <!-- models-start -->
+:end-before: <!-- models-end -->
+:relative-docs: docs/
+```
+
+```{include} ../README.md
+:start-after: <!-- usage-start -->
+:end-before: <!-- usage-end -->
+```
+
 :::{toctree}
 ---
 hidden: true

@@ -16,8 +16,16 @@ The rules for this file:
 
 ## Current development
 
+### Authors
+- @mattwthompson
+- @jaclark5
+
 ### Bugfixes
 - Python files not in the Python module are no longer packaged. (#86)
+
+### Added
+- Added documentation updates
+- Added `with_path` keyword to ``list_available_nagl_models``
 
 ## v2025.09.0
 

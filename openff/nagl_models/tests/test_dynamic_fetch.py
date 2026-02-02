@@ -175,3 +175,13 @@ def test_no_matching_file_at_doi():
 @pytest.mark.parametrize("get_method", [get_model, validate_nagl_model_path])
 def test_output_of_list_models_is_input_to_model_use(list_method_output, get_method):
     get_method(list_method_output)
+
+
+@pytest.mark.parametrize("model_name", list_available_nagl_models(with_path=False))
+def test_list_models_without_path_works_with_get_model(model_name):
+    """Test that model names from list_available_nagl_models(with_path=False) work with get_model."""
+    # This should successfully find and return the model path
+    result = get_model(model_name)
+    assert isinstance(result, str)
+    assert os.path.exists(result)
+    assert os.path.basename(result) == model_name
