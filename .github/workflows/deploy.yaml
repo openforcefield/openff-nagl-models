@@ -9,6 +9,10 @@ on:
       - published
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: bash -l {0}
+
 jobs:
   testpypi_push:
     environment:
@@ -23,15 +27,33 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: testpypi_deploy
-        uses: MDAnalysis/pypi-deployment@main
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      - uses: actions/setup-python@v5
         with:
-          test_submission: true
-          package_name: 'openff-nagl-models'
-          module_name: 'openff.nagl_models'
-          wheels: false
-          test_deps: "pytest numpy"
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pipx
+
+      - name: Build
+        run: |
+          python -m pipx run build
+
+      - id: testpypi_upload
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          skip-existing: true
+          repository-url: https://test.pypi.org/legacy/
+      
+      - name: run_pytest
+        run: |
+          # sleep for 10 seconds to make sure things are refreshing upstream
+          sleep 10
+
+          # Install via pipx and run tests
+          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple openff-nagl-models
+          python -m pip install pytest numpy
+          python -m pytest --pyargs openff.nagl_models
 
   pypi_push:
     environment:
@@ -46,11 +68,29 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: pypi_deploy
-        uses: MDAnalysis/pypi-deployment@main
-        if: github.event_name == 'release' && github.event.action == 'published'
+      - uses: actions/setup-python@v5
         with:
-          package_name: 'openff-nagl-models'
-          module_name: 'openff.nagl_models'
-          wheels: false
-          test_deps: "pytest numpy"
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pipx
+
+      - name: Build
+        run: |
+          python -m pipx run build
+
+      - id: pypi_upload
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          skip-existing: true
+      
+      - name: run_pytest
+        run: |
+          # sleep for 10 seconds to make sure things are refreshing upstream
+          sleep 10
+
+          # Install via pipx and run tests
+          python -m pip install openff-nagl-models
+          python -m pip install pytest numpy
+          python -m pytest --pyargs openff.nagl_models
