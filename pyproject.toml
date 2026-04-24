@@ -18,10 +18,9 @@ maintainers = [
 authors = [
   { name = "Lily Wang", email = "lily.wang@openforcefield.org" },
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
@@ -63,7 +62,7 @@ omit = [
 
 [tool.mypy]
 mypy_path = "stubs/"
-python_version = "3.11"
+python_version = "3.12"
 warn_unused_configs = true
 warn_unused_ignores = true
 warn_incomplete_stub = true
