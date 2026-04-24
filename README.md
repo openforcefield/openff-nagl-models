@@ -30,11 +30,11 @@ Current models available in this repository can be applied with:
 from openff.nagl_models import validate_nagl_model_path
 from openff.toolkit.utils.nagl_wrapper import NAGLToolkitWrapper
 
-model_path = validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
-offmol.assign_partial_charges(
-    partial_charge_method=model_path,
-    toolkit_registry=NAGLToolkitWrapper(),
-)
+# optional
+model_path = validate_nagl_model_path("openff-gnn-am1bcc-1.0.0.pt")
+
+offmol = Molecule.from_smiles("CCO")
+offmol.assign_partial_charges(partial_charge_method="openff-gnn-am1bcc-1.0.0.pt")
 ```
 
 Installing this package exposes an entry point that makes it easy to access models installed in this package.
@@ -52,36 +52,40 @@ You can also list all available models **from all entry points**:
 ```python
 >>> from openff.nagl_models import list_available_nagl_models
 >>> list_available_nagl_models()
-[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt'), ...]
+[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.2.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.3.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-1.0.0.pt')]
 ```
 
-To list available models (also listed in the [## Models](#models) table above):
+To list available models (also listed in the [Models](#models) table above):
 ```python
 >>> from openff.nagl_models import list_available_nagl_models
 >>> list_available_nagl_models(with_path=False)
-['openff-gnn-am1bcc-0.1.0-rc.1.pt', 'openff-gnn-am1bcc-0.0.1-alpha.1.pt', ...]
+['openff-gnn-am1bcc-1.0.0.pt', 'openff-gnn-am1bcc-0.1.0-rc.1.pt', 'openff-gnn-am1bcc-0.1.0-rc.3.pt', 'openff-gnn-am1bcc-0.0.1-alpha.1.pt', 'openff-gnn-am1bcc-0.1.0-rc.2.pt']
 ```
 
 Or validate if a model name is found in the local directory, or an entry point directory:
 
 ```python
 >>> from openff.nagl_models import validate_nagl_model_path
->>> validate_nagl_model_path("openff-gnn-am1bcc-0.0.1-alpha.1.pt")
-PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt')
+>>> validate_nagl_model_path("openff-gnn-am1bcc-1.0.0.pt")
+PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-1.0.0.pt')
 ```
 
-Finally, if you want to find all models for a particular type, use `get_models_by type`.
+Finally, if you want to find all models for a particular type, use `get_models_by_type`.
 These will come sorted according to semantic versioning, where the latest release is last:
 
 ```python
 >>> from openff.nagl_models import get_models_by_type
 >>> get_models_by_type("am1bcc")
-[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt')]
+[PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.0.1-alpha.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.1.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.2.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-0.1.0-rc.3.pt'), PosixPath('/home/.../openff-nagl-models/openff/nagl_models/models/am1bcc/openff-gnn-am1bcc-1.0.0.pt')]
 ```
 
 <!-- usage-end -->
 
-#### Acknowledgements
+## License
+
+See the [LICENSE](LICENSE) file.
+
+## Acknowledgements
 
 Project based on the
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.0.
