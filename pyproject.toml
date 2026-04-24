@@ -44,9 +44,10 @@ include = [ 'openff.nagl_models*' ]
 # if openff/nagl_models/tests/data/ grows to be large, can exclude
 
 [tool.ruff]
+target-version = "py312"
+
 line-length = 119
 namespace-packages = [ "openff/interchange/" ]
-
 lint.select = [ "E", "F", "I", "NPY", "RUF", "UP", "W" ]
 
 [tool.pytest.ini_options]
