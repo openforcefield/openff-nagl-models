@@ -45,9 +45,8 @@ include = [ 'openff.nagl_models*' ]
 
 [tool.ruff]
 target-version = "py312"
-
 line-length = 119
-namespace-packages = [ "openff/interchange/" ]
+namespace-packages = [ "openff/nagl_models/" ]
 lint.select = [ "E", "F", "I", "NPY", "RUF", "UP", "W" ]
 
 [tool.pytest.ini_options]
