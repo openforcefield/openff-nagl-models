@@ -39,16 +39,11 @@ def load_nagl_model_directory_entry_points() -> list[pathlib.Path]:
     """
     from importlib.metadata import entry_points
 
-    dir_paths = []
-    try:
-        for entry_point in entry_points(group="openforcefield.nagl_model_directory"):
-            dir_paths.extend(entry_point.load()())
-    except TypeError:
-        # Fallback for Python 3.9
-        for entry_point in entry_points()["openforcefield.nagl_model_directory"]:
-            dir_paths.extend(entry_point.load()())
-
-    return dir_paths
+    return [
+        path
+        for entry_point in entry_points(group="openforcefield.nagl_model_directory")
+        for path in entry_point.load()()
+    ]
 
 
 def search_file_path(
