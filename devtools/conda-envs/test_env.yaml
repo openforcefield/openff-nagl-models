@@ -14,9 +14,7 @@ dependencies:
   - pytest
   - pytest-socket
   - pytest-randomly
-  # This ought to be >=0.5.2 for the weights_only fix, but those builds have
-  # pytorch <2.8 which doesn't work with Python 3.14
-  - openff-nagl-base >=0.5.1
+  - openff-nagl-base >=0.5.2
 
   - # Type-checking
   - mypy
