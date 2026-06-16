@@ -14,7 +14,7 @@ dependencies:
   - pytest
   - pytest-socket
   - pytest-randomly
-  - openff-nagl-base >=0.5.2
+  - openff-nagl-base >=0.5.1
 
   - # Type-checking
   - mypy
