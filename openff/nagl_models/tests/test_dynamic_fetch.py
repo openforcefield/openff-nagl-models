@@ -147,7 +147,7 @@ def test_error_on_bad_file_suffix():
 def test_all_models_loadable(model):
     pytest.importorskip("openff.nagl")
 
-    from openff.nagl.nn._models import GNNModel
+    from openff.nagl import GNNModel
 
     GNNModel.load(get_model(model), eval_mode=True)
 
