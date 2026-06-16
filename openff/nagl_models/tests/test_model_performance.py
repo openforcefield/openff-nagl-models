@@ -80,7 +80,7 @@ pytest.importorskip("openff.nagl")
     ],
 )
 def test_models_ethanol(model_file, expected_charges):
-    from openff.nagl.nn._models import GNNModel
+    from openff.nagl import GNNModel
     from openff.toolkit import Molecule
 
     from openff.nagl_models import validate_nagl_model_path

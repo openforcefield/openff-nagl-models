@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12", "3.13", "3.14"]
         os: [macOS-latest, ubuntu-latest]
 
     steps:
@@ -46,6 +46,11 @@ jobs:
           environment-file: devtools/conda-envs/test_env.yaml
           create-args: >-
             python=${{ matrix.python-version }}
+
+      - name: Remove OpenFF NAGL on Python 3.14
+        if: matrix.python-version == '3.14'
+        run: |
+          micromamba remove --force -y
 
       - name: Install package
         run: |
