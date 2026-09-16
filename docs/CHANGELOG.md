@@ -14,18 +14,26 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 -->
 
-## Current development
+## v2026.09.0
 
 ### Authors
+- @lilyminium
+- @j-wags
 - @mattwthompson
 - @jaclark5
+
+This release includes no new models but several maintenance fixes.
 
 ### Bugfixes
 - Python files not in the Python module are no longer packaged. (#86)
 
 ### Added
 - Added documentation updates
-- Added `with_path` keyword to ``list_available_nagl_models``
+- Added testing on Python 3.14
+- Added `with_path` keyword to `list_available_nagl_models`
+
+### Behaviors changed
+- Support for Python 3.11 is removed
 
 ## v2025.09.0
 
