@@ -25,15 +25,15 @@ The rules for this file:
 This release includes no new models but several maintenance fixes.
 
 ### Bugfixes
-- Python files not in the Python module are no longer packaged. (#86)
+- Python files not in the Python module are no longer packaged. (PR #86)
 
 ### Added
-- Added documentation updates
-- Added testing on Python 3.14
-- Added `with_path` keyword to `list_available_nagl_models`
+- Added documentation updates (PRs #84, #103, #107)
+- Added testing on Python 3.14 (PR #100)
+- Added `with_path` keyword to `list_available_nagl_models` (PR #89)
 
 ### Behaviors changed
-- Support for Python 3.11 is removed
+- Support for Python 3.11 is removed (PR #93)
 
 ## v2025.09.0
 
