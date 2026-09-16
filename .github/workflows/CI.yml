@@ -47,11 +47,6 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
 
-      - name: Remove OpenFF NAGL on Python 3.14
-        if: matrix.python-version == '3.14'
-        run: |
-          micromamba remove --force -y
-
       - name: Install package
         run: |
           python -m pip install . --no-deps
