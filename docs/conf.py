@@ -128,18 +128,6 @@ intersphinx_mapping = {
         "https://docs.openforcefield.org/projects/units/en/stable/",
         None,
     ),
-    "openff.bespokefit": (
-        "https://docs.openforcefield.org/projects/bespokefit/en/stable/",
-        None,
-    ),
-    "openff.qcsubmit": (
-        "https://docs.openforcefield.org/projects/qcsubmit/en/stable/",
-        None,
-    ),
-    "openff.fragmenter": (
-        "https://docs.openforcefield.org/projects/fragmenter/en/stable/",
-        None,
-    ),
     "openff.evaluator": (
         "https://docs.openforcefield.org/projects/evaluator/en/stable/",
         None,
