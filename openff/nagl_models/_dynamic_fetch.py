@@ -164,6 +164,7 @@ def _get_sha256(filename: str) -> str:
     """Get the SHA256 hash of a file from its path, assuming it's a binary file like a PyTorch model."""
     hash = hashlib.sha256()
 
-    hash.update(open(filename, "rb").read())
+    with open(filename, "rb") as f:
+        hash.update(f.read())
 
     return hash.hexdigest()
