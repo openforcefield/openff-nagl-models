@@ -5,7 +5,7 @@
 | **Status**         | [![GH Actions Status](https://github.com/openforcefield/openff-nagl-models/actions/workflows/CI.yml/badge.svg)](https://github.com/openforcefield/openff-nagl-models/actions?query=branch%3Amain+workflow%3ACI) |
 | **Community**      | [![License: CC-BY 4.0](https://img.shields.io/badge/license-CC--BY--NC--SA--4.0-yellow)](https://creativecommons.org/licenses/by/4.0/deed.en) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13119685.svg)](https://doi.org/10.5281/zenodo.13119685) |
 
-This repository contains NAGL models released by the [Open Force Field Initiative](https://openforcefield.org). They are intended to be used by [OpenFF NAGL](https://github.com/openforcefield/openff-nagl). See [AI_POLICY.md](./AI_POLICY.md) for policy on AI usage in this repo.
+This repository contains NAGL models released by the [Open Force Field Initiative](https://openforcefield.org). They are intended to be used by [OpenFF NAGL](https://github.com/openforcefield/openff-nagl). See [AI_POLICY.md](https://github.com/openforcefield/openff-nagl-models/blob/main/AI_POLICY.md) for policy on AI usage in this repo.
 
 <!-- models-start -->
 ## Models
