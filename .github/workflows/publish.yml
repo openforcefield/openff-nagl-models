@@ -132,7 +132,7 @@ jobs:
             exit 1
           fi
           python -m pip install "${wheels[0]}"
-          python -m pip install .[test]
+          python -m pip install ".[test]"
 
       - name: Verify installed wheel version
         env:
