@@ -159,7 +159,7 @@ jobs:
           PY
 
       - name: Run tests
-        run: python -m pytest -n auto -v --color=yes --durations=10 openff/
+        run: python -m pytest -v --color=yes --durations=10 openff/
 
   publish:
     name: Publish to PyPI
