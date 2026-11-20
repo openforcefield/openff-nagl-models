@@ -32,6 +32,8 @@ dependencies = [
 optional-dependencies.test = [
   "numpy",
   "pytest>=6",
+  "pytest-socket",
+  "pytest-randomly",
 ]
 urls.Documentation = "https://openff-nagl-models.readthedocs.io"
 urls.Repository = "https://github.com/openforcefield/openff-nagl-models"

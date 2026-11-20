@@ -145,7 +145,6 @@ intersphinx_mapping = {
         "https://pytorch-lightning.readthedocs.io/en/stable/",
         None,
     ),
-    "dgl": ("https://www.dgl.ai/dgl_docs/", None),
 }
 myst_url_schemes = [
     "http",
